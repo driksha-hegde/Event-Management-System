@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -64,10 +64,15 @@ const Login = () => {
 
           <button type="submit" className="btn btn-primary w-50">Login</button>
         </form>
+
+        <p className="text-center mt-3">
+          Don't have an account? <Link to="/register">Register here</Link>
+        </p>
       </div>
     </div>
   );
 };
 
 export default Login;
+
 

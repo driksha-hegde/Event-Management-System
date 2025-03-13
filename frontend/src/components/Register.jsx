@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -80,14 +80,19 @@ const Register = () => {
             </select>
           </div>
           <div className="d-flex justify-content-center">
-            <button type="submit" className="btn btn-primary w-50">Register</button>
+            <button type="submit" className="btn btn-success btn-sm px-3">Register</button>
           </div>
         </form>
+
+        <p className="text-center mt-3">
+          Already have an account? <Link to="/login">Login here</Link>
+        </p>
       </div>
     </div>
   );
 };
 
 export default Register;
+
 
 
