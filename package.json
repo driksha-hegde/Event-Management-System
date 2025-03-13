@@ -18,9 +18,10 @@
     "turbo-stream": "^2.4.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "react-scripts start"
-  },
+  "start": "concurrently \"npm run backend\" \"npm run frontend\"",
+  "backend": "cd backend && npm start",
+  "frontend": "cd frontend && npm run dev"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/driksha-hegde/Event-Management-System.git"
@@ -31,5 +32,8 @@
   "bugs": {
     "url": "https://github.com/driksha-hegde/Event-Management-System/issues"
   },
-  "homepage": "https://github.com/driksha-hegde/Event-Management-System#readme"
+  "homepage": "https://github.com/driksha-hegde/Event-Management-System#readme",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
 }
