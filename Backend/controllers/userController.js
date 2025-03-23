@@ -13,40 +13,56 @@ exports.getProfile = async (req, res) => {
     }
 };
 
-// Update User Profile
-// Update User Profile
+// Update User Profile (Username, Email Only)
 exports.updateProfile = async (req, res) => {
     try {
-        const { username, email, password, role } = req.body;
+        const { username, email } = req.body;
         const userId = req.user.id;
 
-        // Find the user
         let user = await User.findById(userId);
         if (!user) return res.status(404).json({ message: "User not found" });
 
-        // Check if the new email is already in use (except by the same user)
+        // Check if email is already in use (except by the same user)
         if (email && email !== user.email) {
             const emailExists = await User.findOne({ email });
             if (emailExists) return res.status(400).json({ message: "Email already in use" });
         }
 
-        // Hash new password if provided
-        if (password) {
-            const salt = await bcrypt.genSalt(10);
-            user.password = await bcrypt.hash(password, salt);
-        }
-
-        // Update fields (including role)
+        // Update fields
         user.username = username || user.username;
         user.email = email || user.email;
-        user.role = role || user.role; // ✅ Now updates role
 
         await user.save();
 
-        // Send response and require re-login
-        res.json({ message: "Profile updated successfully. Please log in again." });
+        res.json({ message: "Profile updated successfully!" });
     } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+
+// Update User Password
+exports.updatePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const userId = req.user.id;
+
+        let user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        // Check if current password is correct
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) return res.status(400).json({ message: "Current password is incorrect" });
+
+        // Hash new password
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(newPassword, salt);
+
+        await user.save();
+
+        res.json({ message: "Password updated successfully. Please log in again." });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
 
