@@ -1,72 +1,67 @@
-import { useState } from "react";
 import axios from "axios";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const Login = ({ setIsLoggedIn }) => {
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/login", { email, password });
-
-      // Success notification
-      toast.success("✅ Login Successful!", { position: "top-right", autoClose: 2000 });
-
-      // Redirect after 2 seconds
-      setTimeout(() => navigate("/dashboard"), 2000);
+      const response = await axios.post("http://localhost:5000/api/auth/login", formData);
+      localStorage.setItem("token", response.data.token); // ✅ Store token
+      localStorage.setItem("user", JSON.stringify(response.data.user)); // ✅ Store user data
+      setIsLoggedIn(true); // ✅ Update state
+      navigate("/dashboard"); // ✅ Redirect
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
-
-      // Error notification
-      toast.error("❌ " + (err.response?.data?.message || "Login failed"), {
-        position: "top-right",
-        autoClose: 3000
-      });
     }
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
-      <ToastContainer />
-      <div className="card shadow p-5 w-50">
-        <h2 className="text-center mb-4">Login</h2>
+    <div className="d-flex justify-content-center align-items-center min-vh-75 bg-light">
+      <div className="card shadow-lg p-4 border-0 rounded-4 text-center w-50">
+        <h3 className="fw-bold text-primary">Welcome Back!</h3>
+        <p className="text-muted small">Sign in to continue</p>
 
-        {error && <div className="alert alert-danger">{error}</div>}
+        {error && <p className="small text-danger text-center">{error}</p>}
 
         <form onSubmit={handleLogin}>
           <div className="mb-3">
-            <label className="form-label">Email</label>
+            <label className="form-label fw-semibold">Email</label>
             <input
               type="email"
-              className="form-control"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name="email"
+              className="form-control rounded-3"
+              value={formData.email}
+              onChange={handleChange}
               required
             />
           </div>
-
           <div className="mb-3">
-            <label className="form-label">Password</label>
+            <label className="form-label fw-semibold">Password</label>
             <input
               type="password"
-              className="form-control"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              className="form-control rounded-3"
+              value={formData.password}
+              onChange={handleChange}
               required
             />
           </div>
-
-          <button type="submit" className="btn btn-primary w-50">Login</button>
+          <button type="submit" className="btn btn-primary w-100 rounded-pill fw-bold">
+            Login
+          </button>
         </form>
 
-        <p className="text-center mt-3">
-          Don't have an account? <Link to="/register">Register here</Link>
+        <p className="text-center mt-3 text-muted">
+          Don't have an account? <Link to="/register" className="text-decoration-none fw-bold">Register here</Link>
         </p>
       </div>
     </div>
@@ -74,5 +69,6 @@ const Login = () => {
 };
 
 export default Login;
+
 
 

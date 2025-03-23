@@ -1,13 +1,11 @@
 import { Link } from "react-router-dom";
 
-const Navbar = () => {
+const NavbarPublic = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
-        {/* Brand Name */}
         <Link className="navbar-brand fw-bold" to="/">Event Management</Link>
 
-        {/* Navbar Toggle Button for Mobile */}
         <button 
           className="navbar-toggler" 
           type="button" 
@@ -20,7 +18,6 @@ const Navbar = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Collapsible Menu */}
         <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
           <ul className="navbar-nav">
             <li className="nav-item">
@@ -36,7 +33,5 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
-
-
+export default NavbarPublic;
 

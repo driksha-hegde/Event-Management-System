@@ -28,64 +28,67 @@ const Register = () => {
   };
 
   return (
-    <div className="register-box">
-      <div className="register-container">
-        <h4 className="text-center">Register</h4>
-        {error && <div className="alert alert-danger p-1">{error}</div>}
+    <div className="d-flex justify-content-center align-items-center min-vh-75 bg-light">
+      <div className="card shadow-lg p-4 border-0 rounded-4 text-center w-50">
+        <h3 className="fw-bold text-success">Create an Account</h3>
+        <p className="text-muted small">Join us and start exploring</p>
+
+        {error && <p className="small text-danger text-center">{error}</p>}
+
         <form onSubmit={handleRegister}>
-          <div className="mb-1">
-            <label className="form-label small-text">Username</label>
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Username</label>
             <input
               type="text"
               name="username"
-              className="form-control small-input"
+              className="form-control rounded-3"
               value={formData.username}
               onChange={handleChange}
               required
             />
           </div>
-          <div className="mb-1">
-            <label className="form-label small-text">Email</label>
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Email</label>
             <input
               type="email"
               name="email"
-              className="form-control small-input"
+              className="form-control rounded-3"
               value={formData.email}
               onChange={handleChange}
               required
             />
           </div>
-          <div className="mb-1">
-            <label className="form-label small-text">Password</label>
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Password</label>
             <input
               type="password"
               name="password"
-              className="form-control small-input"
+              className="form-control rounded-3"
               value={formData.password}
               onChange={handleChange}
               required
             />
           </div>
-          <div className="mb-1">
-            <label className="form-label small-text">Role</label>
-            <select 
-              name="role" 
-              className="form-control small-input text-center" 
-              value={formData.role} 
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Role</label>
+            <select
+              name="role"
+              className="form-control rounded-3 text-center"
+              value={formData.role}
               onChange={handleChange}
             >
               <option value="admin">Admin</option>
-              <option value="participant">Participant</option>
-              <option value="event manager">Event Manager</option>
+              <option value="participant">Attendee</option>
+              <option value="event manager">Event Organizer</option>
             </select>
           </div>
-          <div className="d-flex justify-content-center">
-            <button type="submit" className="btn btn-success btn-sm px-3">Register</button>
-          </div>
+          <button type="submit" className="btn btn-success w-100 rounded-pill fw-bold">
+            Register
+          </button>
         </form>
 
-        <p className="text-center mt-3">
-          Already have an account? <Link to="/login">Login here</Link>
+        <p className="text-center mt-3 text-muted">
+          Already have an account? <Link to="/" className="text-decoration-none fw-bold">Login here</Link>
         </p>
       </div>
     </div>
@@ -93,6 +96,4 @@ const Register = () => {
 };
 
 export default Register;
-
-
 
