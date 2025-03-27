@@ -13,4 +13,3 @@ router.post("/login", login);
 router.get("/users", getAllUsers);
 
 module.exports = router;
-

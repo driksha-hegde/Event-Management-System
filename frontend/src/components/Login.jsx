@@ -15,10 +15,22 @@ const Login = ({ setIsLoggedIn }) => {
     e.preventDefault();
     try {
       const response = await axios.post("http://localhost:5000/api/auth/login", formData);
-      localStorage.setItem("token", response.data.token); // ✅ Store token
-      localStorage.setItem("user", JSON.stringify(response.data.user)); // ✅ Store user data
+
+      const { token, user } = response.data;
+
+      localStorage.setItem("token", token); // ✅ Store token
+      localStorage.setItem("user", JSON.stringify(user)); // ✅ Store user data
+
       setIsLoggedIn(true); // ✅ Update state
-      navigate("/dashboard"); // ✅ Redirect
+
+      // ✅ Navigate based on role
+      if (user.role === "admin") {
+        navigate("/AdminDashboard");
+      } else if (user.role === "event_manager") {
+        navigate("/EventManagerDashboard");
+      } else {
+        navigate("/AttendeeDashboard");
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
     }
@@ -69,6 +81,3 @@ const Login = ({ setIsLoggedIn }) => {
 };
 
 export default Login;
-
-
-

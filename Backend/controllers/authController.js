@@ -17,7 +17,7 @@ exports.register = async (req, res) => {
         if (user) return res.status(400).json({ message: "User already exists" });
 
         // Validate role
-        const validRoles = ["admin", "participant", "event manager"];
+        const validRoles = ["admin", "attendee", "event_manager"];
         if (!validRoles.includes(role.toLowerCase())) {
             return res.status(400).json({ message: "Invalid role selected" });
         }
@@ -71,4 +71,5 @@ exports.getAllUsers = async (req, res) => {
         res.status(500).json({ message: "Error fetching users", error: error.message });
     }
 };
+
 

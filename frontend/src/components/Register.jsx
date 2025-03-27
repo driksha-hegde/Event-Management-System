@@ -7,7 +7,7 @@ const Register = () => {
     username: "",
     email: "",
     password: "",
-    role: "participant",
+    role: "attendee",
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -78,8 +78,8 @@ const Register = () => {
               onChange={handleChange}
             >
               <option value="admin">Admin</option>
-              <option value="participant">Attendee</option>
-              <option value="event manager">Event Organizer</option>
+              <option value="attendee">Attendee</option>
+              <option value="event_manager">Event_manager</option>
             </select>
           </div>
           <button type="submit" className="btn btn-success w-100 rounded-pill fw-bold">

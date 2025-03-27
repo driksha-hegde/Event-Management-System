@@ -41,6 +41,8 @@ exports.updateProfile = async (req, res) => {
 };
 
 // Update User Password
+
+// check this part properly
 exports.updatePassword = async (req, res) => {
     try {
         const { currentPassword, newPassword } = req.body;
@@ -64,5 +66,3 @@ exports.updatePassword = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
-
-
