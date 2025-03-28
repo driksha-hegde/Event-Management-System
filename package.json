@@ -18,10 +18,10 @@
     "turbo-stream": "^2.4.0"
   },
   "scripts": {
-  "start": "concurrently \"npm run backend\" \"npm run frontend\"",
-  "backend": "cd backend && npm start",
-  "frontend": "cd frontend && npm run dev"
-},
+    "start": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "backend": "cd backend && npm start",
+    "frontend": "cd frontend && npm run dev"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/driksha-hegde/Event-Management-System.git"

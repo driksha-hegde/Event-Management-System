@@ -1,56 +1,60 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/axiosInstance";
+import EventForm from "../components/EventForm"; // ✅ Correct import
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/");
-      return;
-    }
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    setUser(storedUser);
 
-    const fetchProfile = async () => {
+    // Fetch events
+    const fetchEvents = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/users/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUser(response.data);
+        const response = await api.get("/events");
+        setEvents(response.data);
       } catch (error) {
-        console.error("Error fetching profile:", error.response?.data?.message);
-        navigate("/");
+        console.error("Failed to fetch events", error);
       }
     };
+    fetchEvents();
+  }, []);
 
-    fetchProfile();
-  }, [navigate]);
+  const handleEventCreated = (newEvent) => {
+    setEvents([...events, newEvent]); // Update state when a new event is created
+  };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
-      <div className="card shadow-lg p-4 border-0 rounded-4 text-center w-50 mx-auto">
-        <h2 className="fw-bold text-primary mb-3">Dashboard</h2>
-        {user ? (
-          <div>
-            <h4 className="text-dark">Welcome, {user.username}!</h4>
-            <p className="text-muted"><strong>Email:</strong> {user.email}</p>
-            <p className="text-muted"><strong>Role:</strong> {user.role}</p>
-            <button 
-              className="btn btn-outline-primary mt-3 px-4 rounded-pill fw-bold"
-              onClick={() => navigate("/profile")}
-            >
-              View Profile
-            </button>
-          </div>
+    <div className="container mt-4">
+      <h2 className="fw-bold">Welcome, {user?.name}</h2>
+      <p className="text-muted">Role: {user?.role}</p>
+
+      {user?.role === "event_manager" && (
+        <div className="mb-4">
+          <EventForm onEventCreated={handleEventCreated} /> {/* ✅ Correct component usage */}
+        </div>
+      )}
+
+      <h4 className="mt-4">Upcoming Events</h4>
+      <ul className="list-group">
+        {events.length > 0 ? (
+          events.map((event) => (
+            <li key={event._id} className="list-group-item">
+              <h5>{event.title}</h5>
+              <p>{event.description}</p>
+              <small>{event.date} at {event.time}</small>
+              <br />
+              <small>Location: {event.location}</small>
+            </li>
+          ))
         ) : (
-          <p className="text-danger">Loading dashboard...</p>
+          <p>No events available</p>
         )}
-      </div>
+      </ul>
     </div>
   );
 };
 
 export default Dashboard;
-

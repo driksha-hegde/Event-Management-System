@@ -33,6 +33,7 @@ connectDB();
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/dashboard", require("./routes/dashboardRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
+app.use("/api/events", require("./routes/eventRoutes"));
 
 // Default Route
 app.get("/", (req, res) => {

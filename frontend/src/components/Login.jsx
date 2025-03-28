@@ -1,10 +1,13 @@
-import axios from "axios";
+import api from "../utils/axiosInstance";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import "./Login.css"; // Import the CSS file
 
 const Login = ({ setIsLoggedIn }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -13,40 +16,40 @@ const Login = ({ setIsLoggedIn }) => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/login", formData);
-
+      const response = await api.post("/auth/login", formData);
       const { token, user } = response.data;
 
-      localStorage.setItem("token", token); // ✅ Store token
-      localStorage.setItem("user", JSON.stringify(user)); // ✅ Store user data
-
-      setIsLoggedIn(true); // ✅ Update state
-
-      // ✅ Navigate based on role
-      if (user.role === "admin") {
-        navigate("/AdminDashboard");
-      } else if (user.role === "event_manager") {
-        navigate("/EventManagerDashboard");
-      } else {
-        navigate("/AttendeeDashboard");
-      }
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      setIsLoggedIn(true);
+      navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center min-vh-75 bg-light">
-      <div className="card shadow-lg p-4 border-0 rounded-4 text-center w-50">
-        <h3 className="fw-bold text-primary">Welcome Back!</h3>
-        <p className="text-muted small">Sign in to continue</p>
+    <div className="fullscreen-background">
+      <div className="overlay"></div>
 
-        {error && <p className="small text-danger text-center">{error}</p>}
+      <motion.div
+        className="login-card"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.2, ease: "easeOut" }}
+      >
+        <h3 className="fw-bold">Welcome Back!</h3>
+        <p className="text-light small">Sign in to continue</p>
+
+        {error && <p className="small text-danger">{error}</p>}
 
         <form onSubmit={handleLogin}>
           <div className="mb-3">
-            <label className="form-label fw-semibold">Email</label>
+            <label className="form-label fw-semibold text-light">Email</label>
             <input
               type="email"
               name="email"
@@ -57,7 +60,7 @@ const Login = ({ setIsLoggedIn }) => {
             />
           </div>
           <div className="mb-3">
-            <label className="form-label fw-semibold">Password</label>
+            <label className="form-label fw-semibold text-light">Password</label>
             <input
               type="password"
               name="password"
@@ -67,15 +70,24 @@ const Login = ({ setIsLoggedIn }) => {
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary w-100 rounded-pill fw-bold">
-            Login
-          </button>
+          <motion.button
+            type="submit"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="login-button"
+            disabled={loading}
+          >
+            {loading ? "Logging in..." : "Login"}
+          </motion.button>
         </form>
 
-        <p className="text-center mt-3 text-muted">
-          Don't have an account? <Link to="/register" className="text-decoration-none fw-bold">Register here</Link>
+        <p className="text-center mt-3 text-light">
+          Don't have an account?{" "}
+          <Link to="/register" className="text-warning fw-bold text-decoration-none">
+            Register here
+          </Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 };

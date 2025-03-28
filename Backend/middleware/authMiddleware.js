@@ -23,7 +23,9 @@ const authMiddleware = (allowedRoles = []) => {
                 return res.status(403).json({ message: "Forbidden: You do not have access" });
             }
 
-            req.user = decoded; // Attach decoded user to `req`
+            req.user = decoded;
+             // Attach decoded user to `req`
+             req.body.createdBy = decoded._id;
             next();
         } catch (error) {
             console.error("❌ JWT Verification Error:", error.message);
@@ -33,6 +35,3 @@ const authMiddleware = (allowedRoles = []) => {
 };
 
 module.exports = authMiddleware;
-
-
-
