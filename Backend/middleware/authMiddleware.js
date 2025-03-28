@@ -17,15 +17,14 @@ const authMiddleware = (allowedRoles = []) => {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             console.log("✅ Decoded Token:", decoded); // Debugging
 
-            // Check if role-based authentication is needed
+            // Role-based access control
             if (allowedRoles.length && !allowedRoles.includes(decoded.role)) {
                 console.log("❌ Forbidden: User role not authorized:", decoded.role);
                 return res.status(403).json({ message: "Forbidden: You do not have access" });
             }
 
-            req.user = decoded;
-             // Attach decoded user to `req`
-             req.body.createdBy = decoded._id;
+            req.user = decoded; // Attach decoded user data to `req`
+            req.body.createdBy = decoded.id; // Ensure `id`, not `_id`
             next();
         } catch (error) {
             console.error("❌ JWT Verification Error:", error.message);
