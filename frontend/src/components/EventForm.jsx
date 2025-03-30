@@ -27,34 +27,47 @@ const EventForm = ({ onEventCreated }) => {
       const token = localStorage.getItem("token");
       console.log("Token:", token); // Debugging token
 
-      // Convert date to correct format
-      const formattedDate = new Date(formData.date);
+      // Ensure date format is correct (YYYY-MM-DD)
+      const formattedDate = new Date(formData.date).toISOString().split("T")[0];
 
       const eventData = {
-        title: formData.title,
-        description: formData.description,
-        date: formattedDate, // Ensures Date format is correct
+        title: formData.title.trim(),
+        description: formData.description.trim(),
+        date: formattedDate, // Ensure correct format
         time: formData.time,
-        location: formData.location,
+        location: formData.location.trim(),
       };
+
+      console.log("Event Data being sent:", eventData); // Debugging
 
       const response = await api.post("/events/create", eventData, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("Event Created:", response.data); // Debugging API response
+      console.log("Event Created:", response.data);
 
+      alert("Event created successfully!");
       setSuccess(true);
       setFormData({ title: "", description: "", date: "", time: "", location: "" });
-
+      
       // Notify parent component
       onEventCreated(response.data);
-
+      
       // Close modal after submission
       document.getElementById("closeModalBtn").click();
     } catch (err) {
       console.error("Error:", err.response?.data || err.message);
-      setError(err.response?.data?.message || "Failed to create event");
+      
+      if (err.response?.data?.suggestion) {
+        const newTime = confirm(
+          `${err.response.data.message}\nWould you like to schedule it for ${err.response.data.suggestion}?`
+        );
+        if (newTime) {
+          setFormData({ ...formData, time: err.response.data.suggestion });
+        }
+      } else {
+        alert(err.response?.data?.message || "Failed to create event");
+      }
     } finally {
       setLoading(false);
     }
@@ -86,30 +99,41 @@ const EventForm = ({ onEventCreated }) => {
             {success && <p className="small text-success">Event created successfully!</p>}
 
             <form onSubmit={handleSubmit}>
+              {/* Title */}
               <div className="mb-2">
+                <label htmlFor="title" className="form-label fw-bold">Event Title</label>
                 <input
                   type="text"
+                  id="title"
                   name="title"
-                  placeholder="Event Title"
+                  placeholder="Enter event title"
                   className="form-control rounded-3"
                   value={formData.title}
                   onChange={handleChange}
                   required
                 />
               </div>
+
+              {/* Description */}
               <div className="mb-2">
+                <label htmlFor="description" className="form-label fw-bold">Description</label>
                 <textarea
+                  id="description"
                   name="description"
-                  placeholder="Description"
+                  placeholder="Enter event details"
                   className="form-control rounded-3"
                   value={formData.description}
                   onChange={handleChange}
                   required
                 />
               </div>
+
+              {/* Date */}
               <div className="mb-2">
+                <label htmlFor="date" className="form-label fw-bold">Date</label>
                 <input
                   type="date"
+                  id="date"
                   name="date"
                   className="form-control rounded-3"
                   value={formData.date}
@@ -117,9 +141,13 @@ const EventForm = ({ onEventCreated }) => {
                   required
                 />
               </div>
+
+              {/* Time */}
               <div className="mb-2">
+                <label htmlFor="time" className="form-label fw-bold">Time</label>
                 <input
                   type="time"
+                  id="time"
                   name="time"
                   className="form-control rounded-3"
                   value={formData.time}
@@ -127,17 +155,23 @@ const EventForm = ({ onEventCreated }) => {
                   required
                 />
               </div>
+
+              {/* Location */}
               <div className="mb-2">
+                <label htmlFor="location" className="form-label fw-bold">Location</label>
                 <input
                   type="text"
+                  id="location"
                   name="location"
-                  placeholder="Location"
+                  placeholder="Enter event location"
                   className="form-control rounded-3"
                   value={formData.location}
                   onChange={handleChange}
                   required
                 />
               </div>
+
+              {/* Submit Button */}
               <button type="submit" className="btn btn-primary w-100 rounded-pill fw-bold" disabled={loading}>
                 {loading ? "Creating..." : "Create"}
               </button>

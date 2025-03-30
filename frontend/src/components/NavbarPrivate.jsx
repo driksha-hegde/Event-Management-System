@@ -15,10 +15,11 @@ const NavbarPrivate = () => {
 
   // State for event form
   const [eventData, setEventData] = useState({
-    name: "",
-    dateTime: "",
-    location: "",
+    title: "",
     description: "",
+    date: "",
+    time: "",
+    location: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -27,12 +28,6 @@ const NavbarPrivate = () => {
   // Handle input changes
   const handleChange = (e) => {
     setEventData({ ...eventData, [e.target.name]: e.target.value });
-  };
-
-  // Convert local datetime to UTC format
-  const formatDateTimeToUTC = (localDateTime) => {
-    const date = new Date(localDateTime);
-    return date.toISOString(); // Convert to UTC (ISO 8601)
   };
 
   // Submit event to backend
@@ -48,12 +43,17 @@ const NavbarPrivate = () => {
       return;
     }
 
-    const formattedEventData = {
-      ...eventData,
-      dateTime: formatDateTimeToUTC(eventData.dateTime), // Convert datetime to UTC
-    };
-
     try {
+      const formattedDate = new Date(eventData.date).toISOString().split("T")[0];
+
+      const formattedEventData = {
+        title: eventData.title.trim(),
+        description: eventData.description.trim(),
+        date: formattedDate, // YYYY-MM-DD format
+        time: eventData.time,
+        location: eventData.location.trim(),
+      };
+
       const response = await api.post("/events/create", formattedEventData, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -61,7 +61,7 @@ const NavbarPrivate = () => {
       console.log("Event Created:", response.data);
 
       // Reset form
-      setEventData({ name: "", dateTime: "", location: "", description: "" });
+      setEventData({ title: "", description: "", date: "", time: "", location: "" });
 
       // Close modal
       document.getElementById("closeModalBtn").click();
@@ -113,6 +113,17 @@ const NavbarPrivate = () => {
                 </li>
               )}
 
+              {/* Dashboard Button */}
+              <li className="nav-item">
+                <button 
+                  className="btn btn-warning btn-xs ms-2"
+                  onClick={() => navigate("/dashboard")}
+                >
+                  Dashboard
+                </button>
+              </li>
+
+              {/* Logout Button */}
               <li className="nav-item">
                 <button
                   className="btn btn-danger btn-xs ms-2"
@@ -153,36 +164,13 @@ const NavbarPrivate = () => {
 
               <form onSubmit={handleCreateEvent}>
                 <div className="mb-3">
-                  <label className="form-label">Event Name</label>
+                  <label className="form-label">Event Title</label>
                   <input
                     type="text"
-                    name="name"
+                    name="title"
                     className="form-control"
-                    placeholder="Enter event name"
-                    value={eventData.name}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Date & Time</label>
-                  <input
-                    type="datetime-local"
-                    name="dateTime"
-                    className="form-control"
-                    value={eventData.dateTime}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Location</label>
-                  <input
-                    type="text"
-                    name="location"
-                    className="form-control"
-                    placeholder="Enter event location"
-                    value={eventData.location}
+                    placeholder="Enter event title"
+                    value={eventData.title}
                     onChange={handleChange}
                     required
                   />
@@ -198,6 +186,40 @@ const NavbarPrivate = () => {
                     onChange={handleChange}
                     required
                   ></textarea>
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Date</label>
+                  <input
+                    type="date"
+                    name="date"
+                    className="form-control"
+                    value={eventData.date}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Time</label>
+                  <input
+                    type="time"
+                    name="time"
+                    className="form-control"
+                    value={eventData.time}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Location</label>
+                  <input
+                    type="text"
+                    name="location"
+                    className="form-control"
+                    placeholder="Enter event location"
+                    value={eventData.location}
+                    onChange={handleChange}
+                    required
+                  />
                 </div>
                 <button type="submit" className="btn btn-success w-100" disabled={loading}>
                   {loading ? "Creating..." : "Create Event"}

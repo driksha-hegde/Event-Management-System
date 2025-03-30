@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../utils/axiosInstance";
-import EventForm from "../components/EventForm"; // ✅ Correct import
+import EventForm from "../components/EventForm";
+import EventList from "../components/EventList"; // ✅ Import EventList
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -31,28 +32,17 @@ const Dashboard = () => {
       <h2 className="fw-bold">Welcome, {user?.name}</h2>
       <p className="text-muted">Role: {user?.role}</p>
 
+      {/* Event Manager can create events */}
       {user?.role === "event_manager" && (
         <div className="mb-4">
-          <EventForm onEventCreated={handleEventCreated} /> {/* ✅ Correct component usage */}
+          <EventForm onEventCreated={handleEventCreated} />
         </div>
       )}
 
       <h4 className="mt-4">Upcoming Events</h4>
-      <ul className="list-group">
-        {events.length > 0 ? (
-          events.map((event) => (
-            <li key={event._id} className="list-group-item">
-              <h5>{event.title}</h5>
-              <p>{event.description}</p>
-              <small>{event.date} at {event.time}</small>
-              <br />
-              <small>Location: {event.location}</small>
-            </li>
-          ))
-        ) : (
-          <p>No events available</p>
-        )}
-      </ul>
+      
+      {/* Use EventList component instead of manually listing events */}
+      <EventList events={events} userRole={user?.role} />
     </div>
   );
 };

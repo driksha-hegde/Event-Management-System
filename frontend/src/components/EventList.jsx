@@ -1,42 +1,43 @@
+import { useState } from "react";
 import axios from "../api/api";
+import "../styles/EventList.css";
 
 const EventList = ({ events, userRole }) => {
-  const handleUpdate = async (eventId) => {
-    const updatedTitle = prompt("Enter new title:");
-    if (!updatedTitle) return;
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
-    try {
-      const token = localStorage.getItem("token");
-      await axios.put(`/events/${eventId}`, { title: updatedTitle }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      alert("Event updated successfully!");
-      window.location.reload();
-    } catch (error) {
-      console.error("Error updating event:", error);
-    }
-  };
+  const openModal = (event) => setSelectedEvent(event);
+  const closeModal = () => setSelectedEvent(null);
 
   return (
-    <div>
+    <div className="event-container">
       {events.length === 0 ? (
         <p>No events available</p>
       ) : (
-        <ul className="list-group">
+        <div className="event-list">
           {events.map((event) => (
-            <li key={event._id} className="list-group-item d-flex justify-content-between align-items-center">
-              <div>
-                <h5>{event.title}</h5>
-                <p>{event.date} | {event.location}</p>
-                <p>{event.description}</p>
-              </div>
-
-              {userRole === "admin" && (
-                <button className="btn btn-warning btn-sm" onClick={() => handleUpdate(event._id)}>Edit</button>
-              )}
-            </li>
+            <div key={event._id} className="event-card">
+              <h5>{event.title}</h5>
+              <button className="btn btn-primary" onClick={() => openModal(event)}>
+                View Details
+              </button>
+            </div>
           ))}
-        </ul>
+        </div>
+      )}
+
+      {/* Modal Popup */}
+      {selectedEvent && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <span className="close-btn" onClick={closeModal}>&times;</span>
+            <h2>{selectedEvent.title}</h2>
+            <p><strong>Date:</strong> {selectedEvent.date}</p>
+            <p><strong>Time:</strong> {selectedEvent.time}</p>
+            <p><strong>Location:</strong> {selectedEvent.location}</p>
+            <p><strong>Description:</strong> {selectedEvent.description}</p>
+            <button className="btn btn-success">Register</button>
+          </div>
+        </div>
       )}
     </div>
   );
