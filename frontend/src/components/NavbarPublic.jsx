@@ -1,37 +1,26 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import "./Navbar.css"; // Import CSS file
 
 const NavbarPublic = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div className="container-fluid">
-        <Link className="navbar-brand fw-bold" to="/">Event Management</Link>
+    <>
+      {/* Burger Menu Button */}
+      <button className="menu-btn" onClick={() => setIsOpen(!isOpen)}>
+        ☰
+      </button>
 
-        <button 
-          className="navbar-toggler" 
-          type="button" 
-          data-bs-toggle="collapse" 
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav" 
-          aria-expanded="false" 
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+      {/* Sidebar */}
+      <div className={`sidebar ${isOpen ? "open" : ""}`}>
+        <button className="close-btn" onClick={() => setIsOpen(false)}>×</button>
 
-        <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
-          <ul className="navbar-nav">
-            <li className="nav-item">
-              <Link className="nav-link" to="/">Login</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/register">Register</Link>
-            </li>
-          </ul>
-        </div>
+        <Link to="/login" className="sidebar-item" onClick={() => setIsOpen(false)}>Login</Link>
+        <Link to="/register" className="sidebar-item" onClick={() => setIsOpen(false)}>Register</Link>
       </div>
-    </nav>
+    </>
   );
 };
 
 export default NavbarPublic;
-

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { motion } from "framer-motion";
+import "./Profile.css"; 
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -78,36 +80,34 @@ const Profile = () => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
-      <div className="card shadow-lg p-4 border-0 rounded-4 text-center w-50 mx-auto">
-        <h2 className="fw-bold text-primary mb-3">My Profile</h2>
+    <div className="fullscreen-background">
+      <div className="overlay"></div>
 
-        {message && <p className="alert alert-success">{message}</p>}
+      <motion.div
+        className="login-card"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.2, ease: "easeOut" }}
+      >
+        <h3 className="fw-bold text-light">My Profile</h3>
+
+        {message && <p className="small alert alert-success">{message}</p>}
 
         {user ? (
           <div>
             {!editing && !changingPassword ? (
               <>
-                <h4 className="text-dark">{user.username}</h4>
+                <h4 className="text-light">{user.username}</h4>
                 <p className="text-muted"><strong>Email:</strong> {user.email}</p>
 
                 <div className="d-flex justify-content-center gap-3 mt-3">
-                  <button 
-                    className="btn btn-outline-primary px-4 rounded-pill fw-bold"
-                    onClick={() => navigate("/dashboard")}
-                  >
+                  <button className="login-button" onClick={() => navigate("/dashboard")}>
                     Back to Dashboard
                   </button>
-                  <button 
-                    className="btn btn-primary px-4 rounded-pill fw-bold"
-                    onClick={() => setEditing(true)}
-                  >
+                  <button className="login-button" onClick={() => setEditing(true)}>
                     Update Profile
                   </button>
-                  <button 
-                    className="btn btn-warning px-4 rounded-pill fw-bold"
-                    onClick={() => setChangingPassword(true)}
-                  >
+                  <button className="login-button" onClick={() => setChangingPassword(true)}>
                     Change Password
                   </button>
                 </div>
@@ -115,7 +115,7 @@ const Profile = () => {
             ) : editing ? (
               <>
                 <div className="mb-3">
-                  <label className="form-label fw-semibold">Username</label>
+                  <label className="form-label fw-semibold text-light">Username</label>
                   <input 
                     type="text" 
                     name="username" 
@@ -125,7 +125,7 @@ const Profile = () => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label fw-semibold">Email</label>
+                  <label className="form-label fw-semibold text-light">Email</label>
                   <input 
                     type="email" 
                     name="email" 
@@ -134,18 +134,12 @@ const Profile = () => {
                     onChange={handleChange} 
                   />
                 </div>
-      
+
                 <div className="d-flex justify-content-center gap-3">
-                  <button 
-                    className="btn btn-success px-4 rounded-pill fw-bold"
-                    onClick={handleUpdate}
-                  >
+                  <button className="login-button" onClick={handleUpdate}>
                     Save Changes
                   </button>
-                  <button 
-                    className="btn btn-danger px-4 rounded-pill fw-bold"
-                    onClick={() => setEditing(false)}
-                  >
+                  <button className="login-button" onClick={() => setEditing(false)}>
                     Cancel
                   </button>
                 </div>
@@ -153,7 +147,7 @@ const Profile = () => {
             ) : (
               <>
                 <div className="mb-3">
-                  <label className="form-label fw-semibold">Current Password</label>
+                  <label className="form-label fw-semibold text-light">Current Password</label>
                   <input 
                     type="password" 
                     name="currentPassword" 
@@ -163,7 +157,7 @@ const Profile = () => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label fw-semibold">New Password</label>
+                  <label className="form-label fw-semibold text-light">New Password</label>
                   <input 
                     type="password" 
                     name="newPassword" 
@@ -174,16 +168,10 @@ const Profile = () => {
                 </div>
 
                 <div className="d-flex justify-content-center gap-3">
-                  <button 
-                    className="btn btn-success px-4 rounded-pill fw-bold"
-                    onClick={handlePasswordUpdate}
-                  >
+                  <button className="login-button" onClick={handlePasswordUpdate}>
                     Change Password
                   </button>
-                  <button 
-                    className="btn btn-danger px-4 rounded-pill fw-bold"
-                    onClick={() => setChangingPassword(false)}
-                  >
+                  <button className="login-button" onClick={() => setChangingPassword(false)}>
                     Cancel
                   </button>
                 </div>
@@ -193,7 +181,7 @@ const Profile = () => {
         ) : (
           <p className="text-danger">Loading profile...</p>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 };

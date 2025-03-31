@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../utils/axiosInstance";
-import EventForm from "../components/EventForm";
-import EventList from "../components/EventList"; // ✅ Import EventList
+import EventList from "../components/EventList";
+import { motion } from "framer-motion";
+import "./Dashboard.css"; // Import the new styling
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -28,21 +29,25 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <h2 className="fw-bold">Welcome, {user?.name}</h2>
-      <p className="text-muted">Role: {user?.role}</p>
+    <div className="fullscreen-background">
+      <div className="overlay"></div>
 
-      {/* Event Manager can create events */}
-      {user?.role === "event_manager" && (
-        <div className="mb-4">
-          <EventForm onEventCreated={handleEventCreated} />
+      <motion.div
+        className="dashboard-card"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.2, ease: "easeOut" }}
+      >
+        <h2 className="fw-bold text-light">Welcome, {user?.username}!</h2>
+        <p className="text-light small">
+          Role: <span className="text-warning fw-semibold">{user?.role}</span>
+        </p>
+
+        <h4 className="mt-4 text-light">Upcoming Events</h4>
+        <div className="event-list-container">
+          <EventList events={events} userRole={user?.role} />
         </div>
-      )}
-
-      <h4 className="mt-4">Upcoming Events</h4>
-      
-      {/* Use EventList component instead of manually listing events */}
-      <EventList events={events} userRole={user?.role} />
+      </motion.div>
     </div>
   );
 };

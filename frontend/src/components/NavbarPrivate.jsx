@@ -1,146 +1,69 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../utils/axiosInstance";
+import { Modal } from "bootstrap";
+import EventForm from "./EventForm";
+import "./Navbar.css"; 
 
 const NavbarPrivate = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const createEventModalRef = useRef(null);
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
   const userRole = user?.role;
 
+  // Open modal when "Create Event" is clicked
+  const openCreateEventModal = () => {
+    setIsOpen(false); // Close sidebar
+    const modalInstance = Modal.getOrCreateInstance(createEventModalRef.current);
+    modalInstance.show();
+  };
+
+  // Close modal when event is created
+  const closeCreateEventModal = () => {
+    const modalInstance = Modal.getInstance(createEventModalRef.current);
+    modalInstance.hide();
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    setIsOpen(false);
     navigate("/");
-  };
-
-  // State for event form
-  const [eventData, setEventData] = useState({
-    title: "",
-    description: "",
-    date: "",
-    time: "",
-    location: "",
-  });
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  // Handle input changes
-  const handleChange = (e) => {
-    setEventData({ ...eventData, [e.target.name]: e.target.value });
-  };
-
-  // Submit event to backend
-  const handleCreateEvent = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setError("Authentication error! Please log in again.");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const formattedDate = new Date(eventData.date).toISOString().split("T")[0];
-
-      const formattedEventData = {
-        title: eventData.title.trim(),
-        description: eventData.description.trim(),
-        date: formattedDate, // YYYY-MM-DD format
-        time: eventData.time,
-        location: eventData.location.trim(),
-      };
-
-      const response = await api.post("/events/create", formattedEventData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      console.log("Event Created:", response.data);
-
-      // Reset form
-      setEventData({ title: "", description: "", date: "", time: "", location: "" });
-
-      // Close modal
-      document.getElementById("closeModalBtn").click();
-
-      alert("Event created successfully!");
-    } catch (err) {
-      console.error("Error Creating Event:", err.response?.data);
-      setError(err.response?.data?.message || "Failed to create event");
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div className="container-fluid">
-          <Link className="navbar-brand fw-bold" to="/">
-            Event Management
-          </Link>
+      {/* Sidebar Toggle Button */}
+      <button className="menu-btn" onClick={() => setIsOpen(!isOpen)}>☰</button>
 
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
+      {/* Sidebar */}
+      <div className={`sidebar ${isOpen ? "open" : ""}`}>
+        <button className="close-btn" onClick={() => setIsOpen(false)}>×</button>
+
+        <Link to="/profile" className="sidebar-item" onClick={() => setIsOpen(false)}>
+          Profile
+        </Link>
+
+        {(userRole === "event_manager" || userRole === "admin") && (
+          <button className="sidebar-item" onClick={openCreateEventModal}>
+            Create Event
           </button>
+        )}
 
-          <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
-            <ul className="navbar-nav">
-              <li className="nav-item">
-                <Link className="nav-link" to="/profile">Profile</Link>
-              </li>
+        <button className="sidebar-item" onClick={() => navigate("/dashboard")}>
+          Dashboard
+        </button>
 
-              {(userRole === "event_manager" || userRole === "admin") && (
-                <li className="nav-item">
-                  <button
-                    className="btn btn-primary btn-xs ms-2"
-                    data-bs-toggle="modal"
-                    data-bs-target="#createEventModal"
-                  >
-                    Create Event
-                  </button>
-                </li>
-              )}
+        <button className="sidebar-item logout" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
 
-              {/* Dashboard Button */}
-              <li className="nav-item">
-                <button 
-                  className="btn btn-warning btn-xs ms-2"
-                  onClick={() => navigate("/dashboard")}
-                >
-                  Dashboard
-                </button>
-              </li>
-
-              {/* Logout Button */}
-              <li className="nav-item">
-                <button
-                  className="btn btn-danger btn-xs ms-2"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-
-      {/* Create Event Modal */}
+      {/* Create Event Modal (Initially Hidden) */}
       <div
         className="modal fade"
         id="createEventModal"
+        ref={createEventModalRef}
         tabIndex="-1"
         aria-labelledby="createEventModalLabel"
         aria-hidden="true"
@@ -148,83 +71,18 @@ const NavbarPrivate = () => {
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content p-3">
             <div className="modal-header">
-              <h5 className="modal-title fw-bold text-primary" id="createEventModalLabel">
-                Create New Event
-              </h5>
+              <h5 className="modal-title fw-bold text-primary">Create Event</h5>
               <button
                 type="button"
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
-                id="closeModalBtn"
               ></button>
             </div>
-            <div className="modal-body">
-              {error && <p className="text-danger small">{error}</p>}
 
-              <form onSubmit={handleCreateEvent}>
-                <div className="mb-3">
-                  <label className="form-label">Event Title</label>
-                  <input
-                    type="text"
-                    name="title"
-                    className="form-control"
-                    placeholder="Enter event title"
-                    value={eventData.title}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Description</label>
-                  <textarea
-                    name="description"
-                    className="form-control"
-                    rows="3"
-                    placeholder="Enter event details"
-                    value={eventData.description}
-                    onChange={handleChange}
-                    required
-                  ></textarea>
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Date</label>
-                  <input
-                    type="date"
-                    name="date"
-                    className="form-control"
-                    value={eventData.date}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Time</label>
-                  <input
-                    type="time"
-                    name="time"
-                    className="form-control"
-                    value={eventData.time}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Location</label>
-                  <input
-                    type="text"
-                    name="location"
-                    className="form-control"
-                    placeholder="Enter event location"
-                    value={eventData.location}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <button type="submit" className="btn btn-success w-100" disabled={loading}>
-                  {loading ? "Creating..." : "Create Event"}
-                </button>
-              </form>
+            <div className="modal-body">
+              {/* Render EventForm inside the modal (not always on the dashboard) */}
+              <EventForm closeModal={closeCreateEventModal} onEventCreated={() => {}} />
             </div>
           </div>
         </div>
