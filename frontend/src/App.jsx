@@ -7,6 +7,7 @@ import NavbarPrivate from "./components/NavbarPrivate";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import LandingPage from "./pages/LandingPage";
+import RegistrationForm from "./components/RegistrationForm"; // Import RegistrationForm
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
@@ -43,8 +44,13 @@ const App = () => {
           <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/register" element={<Register />} />
 
+          {/* Protected Routes */}
           <Route path="/dashboard" element={isLoggedIn ? <Dashboard userRole={userRole} /> : <Navigate to="/" />} />
           <Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/" />} />
+
+          {/* Attendee Registration Route (Only accessible when logged in) */}
+          <Route path="/event/register" element={isLoggedIn ? <RegistrationForm /> : <Navigate to="/login" />} />
+
 
           <Route path="*" element={<Navigate to={isLoggedIn ? "/dashboard" : "/"} />} />
         </Routes>
