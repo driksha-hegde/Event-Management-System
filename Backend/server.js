@@ -18,12 +18,10 @@ const app = express();
 // ✅ Connect to the database before using routes
 connectDB();
 
-
-
 // ✅ Middleware
 app.use(cors());
-app.use("/api/payments/webhook", express.raw({ type: "application/json" }));
 app.use(express.json()); // JSON body parsing
+app.use("/api/payments/webhook", express.raw({ type: "application/json" })); // Raw body middleware for Stripe webhook
 
 // ✅ Error handling for invalid JSON requests
 app.use((err, req, res, next) => {
@@ -39,7 +37,7 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/dashboard", require("./routes/dashboardRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/events", require("./routes/eventRoutes"));
-app.use("/api/payments", require("./routes/paymentRoutes"));
+app.use("/api/payments", require("./routes/paymentRoutes")); // Payments routes including webhook
 app.use("/api/registrations", require("./routes/registrationRoutes"));
 
 // ✅ Default API Route

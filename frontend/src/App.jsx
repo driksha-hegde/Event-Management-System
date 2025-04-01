@@ -11,6 +11,14 @@ import RegistrationForm from "./components/RegistrationForm"; // Import Registra
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
+// Stripe imports
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import PaymentForm from "./components/PaymentForm"; // Assuming PaymentForm is inside the components folder
+
+// Load Stripe with your Public Key (Replace with your actual key)
+const stripePromise = loadStripe("pk_test_51R91yCQPEb3UJG4rJvyLve1Kiq0x3dVmXVX9qEc0zCRhRAkj85fEglvtBALkj3WWErbi234zl3sAegxFsogBm8sO00rvp69R6f");
+
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState(null);
@@ -44,7 +52,24 @@ const App = () => {
           <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/register" element={<Register />} />
 
+<<<<<<< Updated upstream
           {/* Protected Routes */}
+=======
+>>>>>>> Stashed changes
+          {/* Stripe Payment Route */}
+          <Route
+            path="/payment"
+            element={
+              isLoggedIn ? (
+                <Elements stripe={stripePromise}>
+                  <PaymentForm />
+                </Elements>
+              ) : (
+                <Navigate to="/" />
+              )
+            }
+          />
+
           <Route path="/dashboard" element={isLoggedIn ? <Dashboard userRole={userRole} /> : <Navigate to="/" />} />
           <Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/" />} />
 

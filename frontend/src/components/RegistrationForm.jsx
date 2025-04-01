@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import "./RegistrationForm.css"; // ✅ Importing the updated CSS file
+import "./RegistrationForm.css";
 
 const RegistrationForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [eventId, setEventId] = useState(null);
+  const [registrationFee, setRegistrationFee] = useState(0); // Default to 0
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -16,9 +17,11 @@ const RegistrationForm = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const eventIdFromURL = params.get("eventId");
+    const eventFeeFromURL = params.get("fee"); // Get fee from URL
 
     if (eventIdFromURL) {
       setEventId(eventIdFromURL);
+      setRegistrationFee(eventFeeFromURL ? parseInt(eventFeeFromURL, 10) : 0); // Set fee
     } else {
       navigate("/dashboard");
     }
@@ -44,8 +47,16 @@ const RegistrationForm = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      alert("🎉 Registration Successful!");
-      navigate("/dashboard");
+      const registration_id = response.data.registration_id;
+
+      if (registrationFee === 0) {
+        // Show success notification for free events
+        alert("Registered Successfully!");
+        navigate(`/success?registrationId=${registration_id}`);
+      } else {
+        // Redirect to payment gateway for paid events
+        navigate(`/payment?registrationId=${registration_id}&name=${formData.name}&email=${formData.email}&phone=${formData.phone}&fee=${registrationFee}`);
+      }
     } catch (error) {
       alert("Error: " + (error.response?.data?.message || "Something went wrong."));
     }

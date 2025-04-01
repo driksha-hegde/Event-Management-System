@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom"; // Import this
 import axios from "../api/api";
 import "../styles/EventList.css";
 
-
 const EventList = ({ events, userRole }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const navigate = useNavigate(); // Initialize navigate function
@@ -12,7 +11,7 @@ const EventList = ({ events, userRole }) => {
   const closeModal = () => setSelectedEvent(null);
 
   const handleRegisterClick = (eventId) => {
-    navigate(`/event/register?eventId=${eventId}`); // Navigate to the registration form
+    navigate(`/event/register?eventId=${eventId}`); // Navigate to the registration form with eventId
   };
 
   return (
@@ -42,10 +41,16 @@ const EventList = ({ events, userRole }) => {
             <p><strong>Time:</strong> {selectedEvent.time}</p>
             <p><strong>Location:</strong> {selectedEvent.location}</p>
             <p><strong>Description:</strong> {selectedEvent.description}</p>
-            {userRole==="attendee" &&(
-            <button className="btn btn-success" onClick={() => handleRegisterClick(selectedEvent._id)}>
-              Register
-            </button>
+
+            {/* Display Registration Fee */}
+            {selectedEvent.registrationFee !== undefined && (
+              <p><strong>Registration Fee:</strong> ₹{selectedEvent.registrationFee}</p>
+            )}
+
+            {userRole === "attendee" && (
+              <button className="btn btn-success" onClick={() => handleRegisterClick(selectedEvent._id)}>
+                Register
+              </button>
             )}
           </div>
         </div>

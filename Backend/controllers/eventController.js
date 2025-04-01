@@ -17,7 +17,7 @@ exports.createEvent = async (req, res) => {
       return res.status(403).json({ message: "Only event managers and admins can create events" });
     }
 
-    const { title, date, time, location, description } = req.body;
+    const { title, date, time, location, description, registrationFee } = req.body;
 
     // Check if an event exists at the same location, date, and time
     const existingEvent = await Event.findOne({ date, time, location });
@@ -32,7 +32,15 @@ exports.createEvent = async (req, res) => {
     }
 
     // If no conflict at the same location, create the event
-    const newEvent = new Event({ title, date, time, location, description, createdBy: req.user.id });
+    const newEvent = new Event({ 
+      title, 
+      date, 
+      time, 
+      location, 
+      description, 
+      registrationFee, // Include registrationFee in the new event
+      createdBy: req.user.id 
+    });
     await newEvent.save();
 
     res.status(201).json(newEvent);
@@ -107,6 +115,7 @@ exports.updateEvent = async (req, res) => {
       return res.status(403).json({ message: "Unauthorized to update this event" });
     }
 
+    // Include registrationFee in the update
     Object.assign(event, req.body);
     await event.save();
     res.json({ message: "Event updated successfully", event });

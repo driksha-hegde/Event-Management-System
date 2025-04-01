@@ -9,12 +9,18 @@ const EventForm = ({ onEventCreated, closeModal }) => {
     date: "",
     time: "",
     location: "",
+    registrationFee: "", // Added field
   });
 
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    
+    setFormData({
+      ...formData,
+      [name]: name === "registrationFee" ? parseFloat(value) || "" : value,
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -31,6 +37,7 @@ const EventForm = ({ onEventCreated, closeModal }) => {
         date: formattedDate,
         time: formData.time,
         location: formData.location.trim(),
+        registrationFee: formData.registrationFee || 0, // Include in payload
       };
 
       const response = await api.post("/events/create", eventData, {
@@ -44,6 +51,7 @@ const EventForm = ({ onEventCreated, closeModal }) => {
         date: "",
         time: "",
         location: "",
+        registrationFee: "", // Reset field
       });
 
       // Notify parent component
@@ -120,12 +128,23 @@ const EventForm = ({ onEventCreated, closeModal }) => {
         />
       </div>
 
+      {/* New Registration Fee Field */}
+      <div className="mb-2 form-group">
+        <label className="form-label fw-bold">Registration Fee (₹)</label>
+        <input
+          type="number"
+          name="registrationFee"
+          className="form-control rounded-3"
+          value={formData.registrationFee}
+          onChange={handleChange}
+          min="0"
+          step="0.01"
+          required
+        />
+      </div>
+
       {/* Updated button with correct class for gradient color */}
-      <button
-        type="submit"
-        className="submit-button"
-        disabled={loading}
-      >
+      <button type="submit" className="submit-button" disabled={loading}>
         {loading ? "Creating..." : "Create"}
       </button>
     </form>
