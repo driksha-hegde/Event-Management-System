@@ -9,17 +9,18 @@ const EventForm = ({ onEventCreated, closeModal }) => {
     date: "",
     time: "",
     location: "",
-    registrationFee: "", // Added field
+    registrationFee: "", // Allow empty input for better UX
   });
 
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
+    // Allow an empty string while typing, but convert valid numbers properly
     setFormData({
       ...formData,
-      [name]: name === "registrationFee" ? parseFloat(value) || "" : value,
+      [name]: name === "registrationFee" ? (value === "" ? "" : Number(value)) : value,
     });
   };
 
@@ -37,8 +38,10 @@ const EventForm = ({ onEventCreated, closeModal }) => {
         date: formattedDate,
         time: formData.time,
         location: formData.location.trim(),
-        registrationFee: formData.registrationFee || 0, // Include in payload
+        registrationFee: formData.registrationFee === "" ? 0 : Number(formData.registrationFee), // Convert properly
       };
+
+      console.log("Submitting event:", eventData); // Debugging log
 
       const response = await api.post("/events/create", eventData, {
         headers: { Authorization: `Bearer ${token}` },
@@ -51,13 +54,10 @@ const EventForm = ({ onEventCreated, closeModal }) => {
         date: "",
         time: "",
         location: "",
-        registrationFee: "", // Reset field
+        registrationFee: "", // Reset to empty for better UX
       });
 
-      // Notify parent component
       onEventCreated(response.data);
-
-      // Close modal
       closeModal();
     } catch (err) {
       console.error("Error:", err.response?.data || err.message);
@@ -128,7 +128,7 @@ const EventForm = ({ onEventCreated, closeModal }) => {
         />
       </div>
 
-      {/* New Registration Fee Field */}
+      {/* Fixed Registration Fee Field */}
       <div className="mb-2 form-group">
         <label className="form-label fw-bold">Registration Fee (₹)</label>
         <input
@@ -139,11 +139,11 @@ const EventForm = ({ onEventCreated, closeModal }) => {
           onChange={handleChange}
           min="0"
           step="0.01"
+          placeholder="Enter amount (₹0 for free event)"
           required
         />
       </div>
 
-      {/* Updated button with correct class for gradient color */}
       <button type="submit" className="submit-button" disabled={loading}>
         {loading ? "Creating..." : "Create"}
       </button>

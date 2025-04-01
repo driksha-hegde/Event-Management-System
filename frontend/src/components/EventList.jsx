@@ -1,17 +1,17 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import this
+import { useNavigate } from "react-router-dom"; // Import navigation hook
 import axios from "../api/api";
 import "../styles/EventList.css";
 
 const EventList = ({ events, userRole }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const navigate = useNavigate(); // Initialize navigate function
+  const navigate = useNavigate(); // Initialize navigation function
 
   const openModal = (event) => setSelectedEvent(event);
   const closeModal = () => setSelectedEvent(null);
 
-  const handleRegisterClick = (eventId) => {
-    navigate(`/event/register?eventId=${eventId}`); // Navigate to the registration form with eventId
+  const handleRegisterClick = (event) => {
+    navigate(`/event/register?eventId=${event._id}&fee=${event.registrationFee}`);
   };
 
   return (
@@ -48,7 +48,7 @@ const EventList = ({ events, userRole }) => {
             )}
 
             {userRole === "attendee" && (
-              <button className="btn btn-success" onClick={() => handleRegisterClick(selectedEvent._id)}>
+              <button className="btn btn-success" onClick={() => handleRegisterClick(selectedEvent)}>
                 Register
               </button>
             )}
