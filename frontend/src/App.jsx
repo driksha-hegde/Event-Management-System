@@ -52,10 +52,7 @@ const App = () => {
           <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/register" element={<Register />} />
 
-<<<<<<< Updated upstream
           {/* Protected Routes */}
-=======
->>>>>>> Stashed changes
           {/* Stripe Payment Route */}
           <Route
             path="/payment"
