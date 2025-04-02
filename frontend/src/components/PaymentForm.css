@@ -1,0 +1,109 @@
+/* Full-screen background */
+.fullscreen-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url("/landing-image.jpg"); /* Update the path if needed */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Dark overlay for contrast */
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+  
+  /* Payment card with glass effect */
+  .payment-card {
+    width: 420px;
+    padding: 2rem;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-align: center;
+  }
+  
+  /* Form labels */
+  .form-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+    text-align: left;
+  }
+  
+  /* Card input field */
+  .card-input {
+    background: rgba(255, 255, 255, 0.3);
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    color: white;
+  }
+  
+  /* Stripe CardElement container */
+  .StripeElement {
+    width: 100%;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    color: white;
+  }
+  
+  /* Placeholder text for card input */
+  .StripeElement::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  /* Payment button */
+  .pay-button {
+    width: 100%;
+    border-radius: 50px;
+    background: linear-gradient(45deg, #4CAF50, #2E7D32);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    margin-top: 15px;
+  }
+  
+  .pay-button:hover {
+    background: linear-gradient(45deg, #2E7D32, #4CAF50);
+  }
+  
+  /* Payment status message */
+  .payment-status {
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 1rem;
+    text-align: center;
+  }
+  
+  /* Success message */
+  .payment-status.success {
+    color: #4CAF50;
+  }
+  
+  /* Error message */
+  .payment-status.error {
+    color: #FF3D00;
+  }
+  
