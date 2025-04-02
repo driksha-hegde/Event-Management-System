@@ -12,6 +12,11 @@ if (!process.env.JWT_SECRET) {
   process.exit(1);
 }
 
+if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_ENDPOINT_SECRET) {
+  console.error("❌ ERROR: Missing Stripe environment variables.");
+  process.exit(1);
+}
+
 // ✅ Initialize Express app
 const app = express();
 
@@ -21,7 +26,15 @@ connectDB();
 // ✅ Middleware
 app.use(cors());
 app.use(express.json()); // JSON body parsing
-app.use("/api/payments/webhook", express.raw({ type: "application/json" })); // Raw body middleware for Stripe webhook
+
+// ✅ Stripe Webhook Middleware (MUST use raw body)
+// Stripe requires the raw body for signature verification
+app.post("/api/payments/webhook", express.raw({ type: "application/json" }));
+
+
+// ✅ Debugging: Check if server is correctly loading Stripe secrets
+console.log("✅ STRIPE_SECRET_KEY:", process.env.STRIPE_SECRET_KEY ? "Loaded" : "❌ Missing");
+console.log("✅ STRIPE_ENDPOINT_SECRET:", process.env.STRIPE_ENDPOINT_SECRET ? "Loaded" : "❌ Missing");
 
 // ✅ Error handling for invalid JSON requests
 app.use((err, req, res, next) => {

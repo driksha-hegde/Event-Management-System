@@ -6,6 +6,7 @@ import "./RegistrationForm.css";
 const RegistrationForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  
   const [eventId, setEventId] = useState(null);
   const [registrationFee, setRegistrationFee] = useState(0);
   const [formData, setFormData] = useState({
@@ -19,14 +20,16 @@ const RegistrationForm = () => {
     const eventIdFromURL = params.get("eventId");
     const eventFeeFromURL = params.get("fee");
 
-    console.log("URL Params:", location.search); // Debugging
+    console.log("🔍 URL Params:", location.search); // Debugging
 
-    if (eventIdFromURL) {
-      setEventId(eventIdFromURL);
-      setRegistrationFee(eventFeeFromURL ? Number(eventFeeFromURL) : 0);
-    } else {
+    if (!eventIdFromURL) {
+      console.warn("❌ Missing eventId in URL, redirecting...");
       navigate("/dashboard");
+      return;
     }
+
+    setEventId(eventIdFromURL);
+    setRegistrationFee(eventFeeFromURL ? Number(eventFeeFromURL) : 0);
   }, [location, navigate]);
 
   const handleChange = (e) => {
@@ -38,7 +41,12 @@ const RegistrationForm = () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      alert("You must be logged in to register for an event.");
+      alert("❌ You must be logged in to register for an event.");
+      return;
+    }
+
+    if (!formData.name || !formData.email || !formData.phone) {
+      alert("❌ All fields are required.");
       return;
     }
 
@@ -49,22 +57,26 @@ const RegistrationForm = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      const registration_id = response.data.registration_id;
-      
-      console.log("Registration Fee:", registrationFee); // Debugging log
-      console.log("Received Registration ID:", registration_id); // Debugging log
+      // Extract registration ID from response
+      const registrationId = response.data.registration._id;
+
+      console.log("✅ Registration Successful!"); 
+      console.log("💰 Registration Fee:", registrationFee); 
+      console.log("🆔 Received Registration ID:", registrationId); 
 
       if (registrationFee > 0) {
-        // Redirect to payment if event has a fee
-        navigate(`/payment?registrationId=${registration_id}&name=${formData.name}&email=${formData.email}&phone=${formData.phone}&fee=${registrationFee}`);
+        // Redirect to payment page
+        navigate(
+          `/payment?registrationId=${encodeURIComponent(registrationId)}&name=${encodeURIComponent(formData.name)}&email=${encodeURIComponent(formData.email)}&phone=${encodeURIComponent(formData.phone)}&fee=${registrationFee}`
+        );
       } else {
-        // Show success notification for free events
-        alert("Registered Successfully!");
-        navigate(`/success?registrationId=${registration_id}`);
+        // Redirect to success page for free events
+        alert("✅ Registered Successfully!");
+        navigate(`/success?registrationId=${encodeURIComponent(registrationId)}`);
       }
     } catch (error) {
-      console.error("Error:", error.response?.data?.message || error.message);
-      alert("Error: " + (error.response?.data?.message || "Something went wrong."));
+      console.error("❌ Error:", error.response?.data?.message || error.message);
+      alert("❌ Error: " + (error.response?.data?.message || "Something went wrong."));
     }
   };
 
