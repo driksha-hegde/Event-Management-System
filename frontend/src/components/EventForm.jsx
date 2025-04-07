@@ -1,26 +1,29 @@
 import { useState } from "react";
 import api from "../utils/axiosInstance";
-import "../styles/EventForm.css"; // Make sure this is imported!
+import "../styles/EventForm.css";
 
-const EventForm = ({ onEventCreated, closeModal }) => {
+const EventForm = ({ closeModal }) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     date: "",
     time: "",
     location: "",
-    registrationFee: "", // Allow empty input for better UX
+    registrationFee: "",
   });
 
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    // Allow an empty string while typing, but convert valid numbers properly
     setFormData({
       ...formData,
-      [name]: name === "registrationFee" ? (value === "" ? "" : Number(value)) : value,
+      [name]:
+        name === "registrationFee"
+          ? value === ""
+            ? ""
+            : Number(value)
+          : value,
     });
   };
 
@@ -38,10 +41,9 @@ const EventForm = ({ onEventCreated, closeModal }) => {
         date: formattedDate,
         time: formData.time,
         location: formData.location.trim(),
-        registrationFee: formData.registrationFee === "" ? 0 : Number(formData.registrationFee), // Convert properly
+        registrationFee:
+          formData.registrationFee === "" ? 0 : Number(formData.registrationFee),
       };
-
-      console.log("Submitting event:", eventData); // Debugging log
 
       const response = await api.post("/events/create", eventData, {
         headers: { Authorization: `Bearer ${token}` },
@@ -54,10 +56,12 @@ const EventForm = ({ onEventCreated, closeModal }) => {
         date: "",
         time: "",
         location: "",
-        registrationFee: "", // Reset to empty for better UX
+        registrationFee: "",
       });
 
-      onEventCreated(response.data);
+      // ✅ Notify the dashboard to add the event
+      window.dispatchEvent(new CustomEvent("eventCreated", { detail: response.data }));
+
       closeModal();
     } catch (err) {
       console.error("Error:", err.response?.data || err.message);
@@ -128,7 +132,6 @@ const EventForm = ({ onEventCreated, closeModal }) => {
         />
       </div>
 
-      {/* Fixed Registration Fee Field */}
       <div className="mb-2 form-group">
         <label className="form-label fw-bold">Registration Fee (₹)</label>
         <input
