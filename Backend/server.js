@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
-const { handleStripeWebhook } = require("./controllers/paymentController"); // ✅ Import this
+const { handleStripeWebhook } = require("./controllers/paymentController");
 
 dotenv.config();
 
@@ -18,19 +18,23 @@ if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_ENDPOINT_SECRET) {
 
 const app = express();
 
+// ✅ Connect to DB
 connectDB();
+
+// ✅ Enable CORS
 app.use(cors());
 
-// ✅ Stripe Webhook (MUST be before express.json())
+// ✅ Stripe Webhook (must be before express.json())
 app.post("/api/payments/webhook", express.raw({ type: "application/json" }), handleStripeWebhook);
 
-// ✅ After webhook, you can use JSON body parsing
+// ✅ Body parser (after webhook)
 app.use(express.json());
 
+// ✅ Environment variable logs (for debug)
 console.log("✅ STRIPE_SECRET_KEY:", process.env.STRIPE_SECRET_KEY ? "Loaded" : "❌ Missing");
 console.log("✅ STRIPE_ENDPOINT_SECRET:", process.env.STRIPE_ENDPOINT_SECRET ? "Loaded" : "❌ Missing");
 
-// 🔧 Error handling for invalid JSON
+// ✅ Error handling for invalid JSON
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
     console.error("❌ Invalid JSON received:", err.message);
@@ -39,15 +43,16 @@ app.use((err, req, res, next) => {
   next();
 });
 
-// ✅ Other routes
+// ✅ API Routes
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/dashboard", require("./routes/dashboardRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/events", require("./routes/eventRoutes"));
 app.use("/api/payments", require("./routes/paymentRoutes"));
 app.use("/api/registrations", require("./routes/registrationRoutes"));
+app.use("/api/attendees", require("./routes/attendeeRoutes")); // ✅ Added attendee routes
 
-// Default + 404
+// ✅ Default + 404
 app.get("/", (req, res) => {
   res.send("✅ Welcome to the Event Management System API!");
 });

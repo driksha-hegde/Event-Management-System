@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Modal } from "bootstrap";
 import EventForm from "./EventForm";
-import "./Navbar.css"; 
+import "./Navbar.css";
 
 const NavbarPrivate = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,14 +11,12 @@ const NavbarPrivate = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const userRole = user?.role;
 
-  // Open modal when "Create Event" is clicked
   const openCreateEventModal = () => {
-    setIsOpen(false); // Close sidebar
+    setIsOpen(false);
     const modalInstance = Modal.getOrCreateInstance(createEventModalRef.current);
     modalInstance.show();
   };
 
-  // Close modal when event is created
   const closeCreateEventModal = () => {
     const modalInstance = Modal.getInstance(createEventModalRef.current);
     modalInstance.hide();
@@ -33,10 +31,8 @@ const NavbarPrivate = () => {
 
   return (
     <>
-      {/* Sidebar Toggle Button */}
       <button className="menu-btn" onClick={() => setIsOpen(!isOpen)}>☰</button>
 
-      {/* Sidebar */}
       <div className={`sidebar ${isOpen ? "open" : ""}`}>
         <button className="close-btn" onClick={() => setIsOpen(false)}>×</button>
 
@@ -50,6 +46,33 @@ const NavbarPrivate = () => {
           </button>
         )}
 
+        {userRole === "attendee" && (
+          <Link to="/registered-events" className="sidebar-item" onClick={() => setIsOpen(false)}>
+            Registered Events
+          </Link>
+        )}
+
+        {/* ✅ Admin-only Links */}
+        {userRole === "admin" && (
+          <>
+            <Link
+              to="/admin/users"
+              className="sidebar-item"
+              onClick={() => setIsOpen(false)}
+            >
+              All Users
+            </Link>
+
+            <Link
+              to="/admin/registrations"
+              className="sidebar-item"
+              onClick={() => setIsOpen(false)}
+            >
+              All Registrations
+            </Link>
+          </>
+        )}
+
         <button className="sidebar-item" onClick={() => navigate("/dashboard")}>
           Dashboard
         </button>
@@ -59,7 +82,6 @@ const NavbarPrivate = () => {
         </button>
       </div>
 
-      {/* Create Event Modal (Initially Hidden) */}
       <div
         className="modal fade"
         id="createEventModal"
@@ -79,9 +101,7 @@ const NavbarPrivate = () => {
                 aria-label="Close"
               ></button>
             </div>
-
             <div className="modal-body">
-              {/* Render EventForm inside the modal (not always on the dashboard) */}
               <EventForm closeModal={closeCreateEventModal} onEventCreated={() => {}} />
             </div>
           </div>

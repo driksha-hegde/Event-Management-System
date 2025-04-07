@@ -1,3 +1,4 @@
+// src/App.jsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Login from "./components/Login";
@@ -8,17 +9,19 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import LandingPage from "./pages/LandingPage";
 import RegistrationForm from "./components/RegistrationForm";
-import EditEvent from "./components/editEvent"; // ✅ Import EditEvent
+import EditEvent from "./components/editEvent";
+import RegisteredEvents from "./pages/RegisteredEvents";
+import AllUsers from "./pages/AllUsers";
+import AllRegistrations from "./pages/AllRegistrations";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
-// Stripe imports
+// Stripe
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import PaymentForm from "./components/PaymentForm";
 
-// Load Stripe with your Public Key
 const stripePromise = loadStripe("pk_test_51R91yCQPEb3UJG4rJvyLve1Kiq0x3dVmXVX9qEc0zCRhRAkj85fEglvtBALkj3WWErbi234zl3sAegxFsogBm8sO00rvp69R6f");
 
 const App = () => {
@@ -46,20 +49,16 @@ const App = () => {
 
   return (
     <Router>
-      {isLoggedIn ? (
-        <NavbarPrivate onLogout={() => setIsLoggedIn(false)} />
-      ) : (
-        <NavbarPublic />
-      )}
+      {isLoggedIn ? <NavbarPrivate onLogout={() => setIsLoggedIn(false)} /> : <NavbarPublic />}
 
       <div className="container mt-5">
         <Routes>
-          {/* Public Routes */}
+          {/* Public */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Payment (Protected) */}
+          {/* Payment */}
           <Route
             path="/payment"
             element={
@@ -73,23 +72,10 @@ const App = () => {
             }
           />
 
-          {/* Dashboard & Profile (Protected) */}
-          <Route
-            path="/dashboard"
-            element={isLoggedIn ? <Dashboard userRole={userRole} /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/profile"
-            element={isLoggedIn ? <Profile /> : <Navigate to="/" />}
-          />
-
-          {/* Event Registration (Attendee Only) */}
-          <Route
-            path="/event/register"
-            element={isLoggedIn ? <RegistrationForm /> : <Navigate to="/login" />}
-          />
-
-          {/* ✅ Edit Event (Event Manager or Admin Only) */}
+          {/* Protected */}
+          <Route path="/dashboard" element={isLoggedIn ? <Dashboard userRole={userRole} /> : <Navigate to="/" />} />
+          <Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/" />} />
+          <Route path="/event/register" element={isLoggedIn ? <RegistrationForm /> : <Navigate to="/login" />} />
           <Route
             path="/event/edit/:eventId"
             element={
@@ -100,8 +86,40 @@ const App = () => {
               )
             }
           />
+          <Route
+            path="/registered-events"
+            element={
+              isLoggedIn && userRole === "attendee" ? (
+                <RegisteredEvents />
+              ) : (
+                <Navigate to="/" />
+              )
+            }
+          />
 
-          {/* Fallback Route */}
+          {/* ✅ Admin Only Routes */}
+          <Route
+            path="/admin/users"
+            element={
+              isLoggedIn && userRole === "admin" ? (
+                <AllUsers />
+              ) : (
+                <Navigate to="/" />
+              )
+            }
+          />
+          <Route
+            path="/admin/registrations"
+            element={
+              isLoggedIn && userRole === "admin" ? (
+                <AllRegistrations />
+              ) : (
+                <Navigate to="/" />
+              )
+            }
+          />
+
+          {/* Fallback */}
           <Route path="*" element={<Navigate to={isLoggedIn ? "/dashboard" : "/"} />} />
         </Routes>
       </div>
