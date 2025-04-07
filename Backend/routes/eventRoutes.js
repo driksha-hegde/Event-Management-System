@@ -19,10 +19,13 @@ router.post("/create", authenticate, authMiddleware(["event_manager", "admin"]),
 router.get("/:id", authenticate, authMiddleware(["event_manager", "admin"]), getEventById);
 
 // Update event by ID - Only creator can update
-router.put("/:id", authenticate, authMiddleware(["event_manager", "admin"]),updateEvent);
+router.put("/:id",  authMiddleware(["event_manager", "admin"]), authenticate, updateEvent);
+
 
 // Delete event by ID - Only creator can delete
-router.delete("/:id", authenticate, authMiddleware(["event_manager", "admin"]), deleteEvent);
+
+router.delete("/:id", authMiddleware(["event_manager", "admin"]), authenticate, deleteEvent);
+
 
 
 
