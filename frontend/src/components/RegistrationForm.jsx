@@ -6,7 +6,7 @@ import "./RegistrationForm.css";
 const RegistrationForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const [eventId, setEventId] = useState(null);
   const [registrationFee, setRegistrationFee] = useState(0);
   const [formData, setFormData] = useState({
@@ -20,7 +20,7 @@ const RegistrationForm = () => {
     const eventIdFromURL = params.get("eventId");
     const eventFeeFromURL = params.get("fee");
 
-    console.log("🔍 URL Params:", location.search); // Debugging
+    console.log("🔍 URL Params:", location.search);
 
     if (!eventIdFromURL) {
       console.warn("❌ Missing eventId in URL, redirecting...");
@@ -29,7 +29,11 @@ const RegistrationForm = () => {
     }
 
     setEventId(eventIdFromURL);
-    setRegistrationFee(eventFeeFromURL ? Number(eventFeeFromURL) : 0);
+
+    const parsedFee = parseFloat(eventFeeFromURL);
+    console.log("💸 Parsed Fee:", parsedFee);
+
+    setRegistrationFee(!isNaN(parsedFee) ? parsedFee : 0);
   }, [location, navigate]);
 
   const handleChange = (e) => {
@@ -57,20 +61,21 @@ const RegistrationForm = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      // Extract registration ID from response
       const registrationId = response.data.registration._id;
 
-      console.log("✅ Registration Successful!"); 
-      console.log("💰 Registration Fee:", registrationFee); 
-      console.log("🆔 Received Registration ID:", registrationId); 
+      console.log("✅ Registration Successful!");
+      console.log("💰 Registration Fee:", registrationFee);
+      console.log("🆔 Received Registration ID:", registrationId);
 
       if (registrationFee > 0) {
-        // Redirect to payment page
         navigate(
-          `/payment?registrationId=${encodeURIComponent(registrationId)}&name=${encodeURIComponent(formData.name)}&email=${encodeURIComponent(formData.email)}&phone=${encodeURIComponent(formData.phone)}&fee=${registrationFee}`
+          `/payment?registrationId=${encodeURIComponent(registrationId)}&name=${encodeURIComponent(
+            formData.name
+          )}&email=${encodeURIComponent(formData.email)}&phone=${encodeURIComponent(
+            formData.phone
+          )}&fee=${registrationFee}`
         );
       } else {
-        // Redirect to success page for free events
         alert("✅ Registered Successfully!");
         navigate(`/success?registrationId=${encodeURIComponent(registrationId)}`);
       }

@@ -6,9 +6,15 @@ const registrationSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String, required: true },
-  paymentStatus: { type: String, enum: ["pending", "completed"], default: "pending" },
+  paymentStatus: {
+    type: String,
+    enum: ["pending", "completed", "failed"],
+    default: "pending"
+  },
+  paymentIntentId: { type: String }, // ✅ To store Stripe's payment intent ID
   createdAt: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model("Registration", registrationSchema);
+
 

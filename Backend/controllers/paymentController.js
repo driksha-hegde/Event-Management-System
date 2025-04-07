@@ -1,12 +1,13 @@
 const { createPaymentIntent } = require("../utils/payment");
 const Stripe = require("stripe");
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-const Registration = require("../models/Registration"); // ✅ Adjust the path if needed
+const Registration = require("../models/Registration");
 
 // ✅ Function to initiate payment
 const initiatePayment = async (req, res) => {
   try {
     const { amount, registrationId } = req.body;
+
     if (!amount || !registrationId) {
       return res.status(400).json({ message: "❌ Amount and Registration ID are required" });
     }
@@ -34,6 +35,7 @@ const handleStripeWebhook = async (req, res) => {
 
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    console.log("📩 Stripe webhook received:", event.type);
   } catch (err) {
     console.error(`❌ Webhook Signature Verification Failed: ${err.message}`);
     return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -44,18 +46,17 @@ const handleStripeWebhook = async (req, res) => {
       const paymentIntent = event.data.object;
       console.log("✅ PaymentIntent was successful!", paymentIntent);
 
-      // ✅ Extract metadata (registrationId)
       const registrationId = paymentIntent.metadata.registrationId;
+
       if (!registrationId) {
         console.error("❌ No registrationId found in payment metadata");
         return res.status(400).send("Missing registrationId in metadata");
       }
 
-      // ✅ Update the payment status in MongoDB
       try {
         const updatedRegistration = await Registration.findByIdAndUpdate(
           registrationId,
-          { paymentStatus: "successful", paymentIntentId: paymentIntent.id },
+          { paymentStatus: "completed", paymentIntentId: paymentIntent.id },
           { new: true }
         );
 
@@ -72,7 +73,17 @@ const handleStripeWebhook = async (req, res) => {
       break;
 
     case "payment_intent.payment_failed":
-      console.log("❌ PaymentIntent failed:", event.data.object);
+      const failedIntent = event.data.object;
+      console.log("❌ PaymentIntent failed:", failedIntent);
+
+      const failedRegId = failedIntent.metadata.registrationId;
+
+      if (failedRegId) {
+        await Registration.findByIdAndUpdate(
+          failedRegId,
+          { paymentStatus: "failed", paymentIntentId: failedIntent.id }
+        );
+      }
       break;
 
     default:
@@ -82,31 +93,4 @@ const handleStripeWebhook = async (req, res) => {
   res.status(200).send("Event received");
 };
 
-// ✅ Manually Confirm Payment Route
-const confirmPayment = async (req, res) => {
-  try {
-    const { registrationId, paymentIntentId } = req.body;
-
-    if (!registrationId || !paymentIntentId) {
-      return res.status(400).json({ message: "❌ Missing required fields" });
-    }
-
-    // ✅ Update payment status in MongoDB
-    const updatedRegistration = await Registration.findByIdAndUpdate(
-      registrationId,
-      { paymentStatus: "successful", paymentIntentId },
-      { new: true }
-    );
-
-    if (!updatedRegistration) {
-      return res.status(404).json({ message: "❌ Registration not found" });
-    }
-
-    res.json({ message: "✅ Payment status updated successfully", registration: updatedRegistration });
-  } catch (error) {
-    console.error("❌ Error updating payment status:", error);
-    res.status(500).json({ message: "❌ Internal server error" });
-  }
-};
-
-module.exports = { initiatePayment, handleStripeWebhook, confirmPayment };
+module.exports = { initiatePayment, handleStripeWebhook };
