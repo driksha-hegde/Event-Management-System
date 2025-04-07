@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import navigation hook
+import { useNavigate } from "react-router-dom";
 import axios from "../api/api";
 import "../styles/EventList.css";
 
 const EventList = ({ events, userRole }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const navigate = useNavigate(); // Initialize navigation function
+  const navigate = useNavigate();
 
   const openModal = (event) => setSelectedEvent(event);
   const closeModal = () => setSelectedEvent(null);
@@ -14,31 +14,28 @@ const EventList = ({ events, userRole }) => {
     navigate(`/event/register?eventId=${event._id}&fee=${event.registrationFee}`);
   };
 
-  // ✅ Navigate to Edit Page
   const handleEditClick = (eventId) => {
     navigate(`/event/edit/${eventId}`);
   };
 
-  // ✅ Handle Delete Event
   const handleDeleteClick = async (eventId) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this event?");
     if (!confirmDelete) return;
-  
+
     try {
-      const token = localStorage.getItem("token"); // ✅ Get token from storage
+      const token = localStorage.getItem("token");
       await axios.delete(`/events/${eventId}`, {
         headers: {
-          Authorization: `Bearer ${token}`, // ✅ Include the token in the header
+          Authorization: `Bearer ${token}`,
         },
       });
       alert("Event deleted successfully.");
-      window.location.reload(); // Refresh the list
+      window.location.reload();
     } catch (error) {
       console.error("Error deleting event:", error.response?.data || error);
       alert("Failed to delete event.");
     }
   };
-  
 
   return (
     <div className="event-container">
@@ -49,33 +46,28 @@ const EventList = ({ events, userRole }) => {
           {events.map((event) => (
             <div key={event._id} className="event-card">
               <h5>{event.title}</h5>
-              <button className="btn btn-primary" onClick={() => openModal(event)}>
-                View Details
-              </button>
 
-              {/* ✅ Edit/Delete for Admins & Event Managers */}
-              {(userRole === "admin" || userRole === "event_manager") && (
-                <div className="mt-2">
-                  <button
-                    className="btn btn-warning btn-sm me-2"
-                    onClick={() => handleEditClick(event._id)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => handleDeleteClick(event._id)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              )}
+              <div className="button-group">
+                <button className="btn" onClick={() => openModal(event)}>
+                  View
+                </button>
+
+                {(userRole === "admin" || userRole === "event_manager") && (
+                  <>
+                    <button className="btn" onClick={() => handleEditClick(event._id)}>
+                      Edit
+                    </button>
+                    <button className="btn" onClick={() => handleDeleteClick(event._id)}>
+                      Delete
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Modal Popup */}
       {selectedEvent && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
