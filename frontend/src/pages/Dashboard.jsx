@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../utils/axiosInstance";
 import EventList from "../components/EventList";
 import { motion } from "framer-motion";
-import "./Dashboard.css"; // Import the new styling
+import "./Dashboard.css";
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -12,21 +12,31 @@ const Dashboard = () => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     setUser(storedUser);
 
-    // Fetch events
     const fetchEvents = async () => {
       try {
-        const response = await api.get("/events");
+        const token = localStorage.getItem("token");
+        const response = await api.get("/events", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setEvents(response.data);
       } catch (error) {
         console.error("Failed to fetch events", error);
       }
     };
-    fetchEvents();
-  }, []);
 
-  const handleEventCreated = (newEvent) => {
-    setEvents([...events, newEvent]); // Update state when a new event is created
-  };
+    fetchEvents();
+
+    // ✅ Listen for new events
+    const handleNewEvent = (e) => {
+      setEvents((prevEvents) => [...prevEvents, e.detail]);
+    };
+
+    window.addEventListener("eventCreated", handleNewEvent);
+
+    return () => {
+      window.removeEventListener("eventCreated", handleNewEvent);
+    };
+  }, []);
 
   return (
     <div className="fullscreen-background">
@@ -45,7 +55,7 @@ const Dashboard = () => {
 
         <h4 className="mt-4 text-light">Upcoming Events</h4>
         <div className="event-list-container">
-          <EventList events={events} userRole={user?.role} />
+          <EventList events={events} setEventList={setEvents} userRole={user?.role} />
         </div>
       </motion.div>
     </div>
