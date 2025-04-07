@@ -16,17 +16,21 @@ exports.registerForEvent = async (req, res) => {
         const existingRegistration = await Registration.findOne({ event: eventId, user: userId });
         if (existingRegistration) return res.status(400).json({ message: "User already registered for this event" });
 
-        // Create new registration
+        // ✅ Determine payment status
+        const isFree = event.registrationFee === 0;
+
+        // Create registration
         const registration = new Registration({
             event: eventId,
             user: userId,
             name,
             email,
             phone,
-            paymentStatus: "pending"
+            paymentStatus: isFree ? "completed" : "pending"
         });
 
         await registration.save();
+
         res.status(201).json({ message: "Registration successful", registration });
     } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
@@ -36,8 +40,13 @@ exports.registerForEvent = async (req, res) => {
 // ✅ Get all registrations
 exports.getAllRegistrations = async (req, res) => {
     try {
-        const registrations = await Registration.find().populate("event user", "name email");
-        if (!registrations.length) return res.status(404).json({ message: "No registrations found" });
+        const registrations = await Registration.find()
+            .populate("event", "title date")
+            .populate("user", "name email");
+
+        if (!registrations.length) {
+            return res.status(404).json({ message: "No registrations found" });
+        }
 
         res.status(200).json(registrations);
     } catch (error) {
@@ -50,8 +59,12 @@ exports.getRegistrationsByEvent = async (req, res) => {
     try {
         const { eventId } = req.params;
 
-        const registrations = await Registration.find({ event: eventId }).populate("user", "name email");
-        if (!registrations.length) return res.status(404).json({ message: "No registrations found for this event" });
+        const registrations = await Registration.find({ event: eventId })
+            .populate("user", "name email");
+
+        if (!registrations.length) {
+            return res.status(404).json({ message: "No registrations found for this event" });
+        }
 
         res.status(200).json(registrations);
     } catch (error) {

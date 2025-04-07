@@ -90,9 +90,9 @@ const Register = () => {
               value={formData.role}
               onChange={handleChange}
             >
-              <option value="admin">Admin</option>
+              
               <option value="attendee">Attendee</option>
-              <option value="event_manager">Event Manager</option>
+              
             </select>
           </div>
           <motion.button
