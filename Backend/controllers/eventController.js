@@ -148,4 +148,19 @@ exports.deleteEvent = async (req, res) => {
   }
 };
 
+// Get events created by the logged-in event manager
+exports.getMyEvents = async (req, res) => {
+  try {
+    if (req.user.role !== 'event_manager') {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    const myEvents = await Event.find({ createdBy: req.user.id });
+    res.status(200).json(myEvents);
+  } catch (error) {
+    console.error("Error fetching my events:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 

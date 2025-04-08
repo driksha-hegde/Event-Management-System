@@ -48,6 +48,13 @@ const NavbarPrivate = () => {
           </button>
         )}
 
+        {/* Event Manager-only: My Events */}
+        {userRole === "event_manager" && (
+          <Link to="/my-events" className="sidebar-item" onClick={() => setIsOpen(false)}>
+            My Events
+          </Link>
+        )}
+
         {/* Attendee-only: Registered Events */}
         {userRole === "attendee" && (
           <Link to="/registered-events" className="sidebar-item" onClick={() => setIsOpen(false)}>

@@ -14,7 +14,8 @@ import EditEvent from "./components/editEvent";
 import RegisteredEvents from "./pages/RegisteredEvents";
 import AllUsers from "./pages/AllUsers";
 import AllRegistrations from "./pages/AllRegistrations";
-import ManageRoles from "./pages/ManageRoles"; // ✅ New import
+import ManageRoles from "./pages/ManageRoles";
+import MyEvents from "./pages/MyEvents"; // ✅ Added for event manager's events
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -94,6 +95,18 @@ const App = () => {
                 <RegisteredEvents />
               ) : (
                 <Navigate to="/dashboard" />
+              )
+            }
+          />
+
+          {/* ✅ Event Manager Only: My Events */}
+          <Route
+            path="/my-events"
+            element={
+              isLoggedIn && userRole === "event_manager" ? (
+                <MyEvents />
+              ) : (
+                <Navigate to="/" />
               )
             }
           />
