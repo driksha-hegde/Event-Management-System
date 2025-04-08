@@ -1,0 +1,100 @@
+.my-attendees-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: url("/landing-image.jpg") no-repeat center center fixed;
+  background-size: cover;
+  z-index: -2;
+}
+
+.my-attendees-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+
+.my-attendees-card {
+  width: 95%;
+  max-height: 90vh;
+  margin: 5vh auto;
+  padding: 2rem;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  color: white;
+  overflow-y: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.table-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #ffcc00, #ff9900);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  max-height: 65vh;
+}
+
+.attendee-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: white;
+  text-align: left;
+}
+
+.attendee-table th,
+.attendee-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.attendee-table th {
+  background: linear-gradient(135deg, #ffcc00, #ff9900);
+  color: rgb(0, 0, 0);
+  position: sticky;
+  top: 0;
+}
+
+.attendee-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.error-text {
+  color: #ffcccb;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.back-btn {
+  background: #ff9900;
+  color: #000;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  transition: background 0.3s ease;
+}
+
+.back-btn:hover {
+  background: #e68900;
+}

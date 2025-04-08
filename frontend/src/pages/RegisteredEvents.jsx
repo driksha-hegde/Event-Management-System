@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./RegisteredEvents.css"; // Make sure this CSS file exists
+import "./RegisteredEvents.css";
 
 const RegisteredEvents = () => {
   const [events, setEvents] = useState([]);
@@ -13,44 +13,26 @@ const RegisteredEvents = () => {
     const fetchRegisteredEvents = async () => {
       const token = localStorage.getItem("token");
 
-      // 🔒 Redirect if token is missing
       if (!token) {
-        console.warn("⚠️ No token found. Redirecting to login/landing page.");
-        navigate("/"); // Redirect to landing/login
+        console.warn("⚠️ No token found. Redirecting to login.");
+        navigate("/");
         return;
       }
 
       try {
         const res = await axios.get("http://localhost:5000/api/attendees/my-events", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        console.log("📦 Registered Events Response:", res.data);
         setEvents(res.data.events || []);
-        setLoading(false);
       } catch (err) {
         console.error("❌ Fetch Error:", err);
-
-        if (err.response) {
-          console.error("🔍 Error Response:", err.response.data);
-
-          // 🔐 Redirect on unauthorized
-          if (err.response.status === 401 || err.response.status === 403) {
-            navigate("/");
-            return;
-          }
-
-          setError(err.response.data.message || "Failed to load registered events.");
-        } else if (err.request) {
-          console.error("📡 No response received:", err.request);
-          setError("No response from server.");
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          navigate("/");
         } else {
-          console.error("⚙️ Error setting up request:", err.message);
-          setError("Error setting up request.");
+          setError("Failed to load registered events.");
         }
-
+      } finally {
         setLoading(false);
       }
     };
@@ -63,6 +45,50 @@ const RegisteredEvents = () => {
       dateStyle: "medium",
       timeStyle: "short",
     });
+  };
+
+  const handleCheckIn = async (eventId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.post(
+        `http://localhost:5000/api/attendees/${eventId}/checkin`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const { checkInTime } = res.data;
+
+      setEvents((prev) =>
+        prev.map((e) =>
+          e.event._id === eventId ? { ...e, checkInTime } : e
+        )
+      );
+    } catch (err) {
+      console.error("❌ Check-in failed:", err);
+      alert("Check-in failed.");
+    }
+  };
+
+  const handleCheckOut = async (eventId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.post(
+        `http://localhost:5000/api/attendees/${eventId}/checkout`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const { checkOutTime } = res.data;
+
+      setEvents((prev) =>
+        prev.map((e) =>
+          e.event._id === eventId ? { ...e, checkOutTime } : e
+        )
+      );
+    } catch (err) {
+      console.error("❌ Check-out failed:", err);
+      alert("Check-out failed.");
+    }
   };
 
   if (loading) return <p className="text-center mt-5">Loading your registered events...</p>;
@@ -101,14 +127,29 @@ const RegisteredEvents = () => {
                     </td>
                     <td>{registration.event?.location || "N/A"}</td>
                     <td>
-                      {registration.checkInTime
-                        ? formatDateTime(registration.checkInTime)
-                        : "Not checked in"}
+                      {registration.checkInTime ? (
+                        formatDateTime(registration.checkInTime)
+                      ) : (
+                        <button
+                          className="btn btn-success btn-sm"
+                          onClick={() => handleCheckIn(registration.event._id)}
+                        >
+                          Check In
+                        </button>
+                      )}
                     </td>
                     <td>
-                      {registration.checkOutTime
-                        ? formatDateTime(registration.checkOutTime)
-                        : "Not checked out"}
+                      {registration.checkOutTime ? (
+                        formatDateTime(registration.checkOutTime)
+                      ) : (
+                        <button
+                          className="btn btn-warning btn-sm"
+                          onClick={() => handleCheckOut(registration.event._id)}
+                          disabled={!registration.checkInTime}
+                        >
+                          Check Out
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

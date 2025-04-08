@@ -76,7 +76,7 @@ const MyEvents = () => {
                     <td>{event.description}</td>
                     <td>
                       <button
-                        className="view-attendees-btn"
+                        className="view-attendees-btn btn"
                         onClick={() => handleViewAttendees(event._id)}
                       >
                         View
