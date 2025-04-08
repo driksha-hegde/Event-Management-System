@@ -1,19 +1,29 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "./RegisteredEvents.css"; // Make sure this CSS file exists
 
 const RegisteredEvents = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRegisteredEvents = async () => {
+      const token = localStorage.getItem("token");
+
+      // 🔒 Redirect if token is missing
+      if (!token) {
+        console.warn("⚠️ No token found. Redirecting to login/landing page.");
+        navigate("/"); // Redirect to landing/login
+        return;
+      }
+
       try {
-        const token = localStorage.getItem("token");
         const res = await axios.get("http://localhost:5000/api/attendees/my-events", {
           headers: {
-            Authorization: `Bearer ${token}`, // ✅ Fixed: added backticks
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -25,6 +35,13 @@ const RegisteredEvents = () => {
 
         if (err.response) {
           console.error("🔍 Error Response:", err.response.data);
+
+          // 🔐 Redirect on unauthorized
+          if (err.response.status === 401 || err.response.status === 403) {
+            navigate("/");
+            return;
+          }
+
           setError(err.response.data.message || "Failed to load registered events.");
         } else if (err.request) {
           console.error("📡 No response received:", err.request);
@@ -39,7 +56,7 @@ const RegisteredEvents = () => {
     };
 
     fetchRegisteredEvents();
-  }, []);
+  }, [navigate]);
 
   const formatDateTime = (date) => {
     return new Date(date).toLocaleString("en-IN", {
@@ -105,4 +122,3 @@ const RegisteredEvents = () => {
 };
 
 export default RegisteredEvents;
-

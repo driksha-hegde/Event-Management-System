@@ -17,7 +17,13 @@ const Login = ({ setIsLoggedIn }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
+
     try {
+      // 🔁 Refresh localStorage before login
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
       const response = await api.post("/auth/login", formData);
       const { token, user } = response.data;
 

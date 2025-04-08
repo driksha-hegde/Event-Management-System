@@ -93,7 +93,7 @@ const App = () => {
               isLoggedIn && userRole === "attendee" ? (
                 <RegisteredEvents />
               ) : (
-                <Navigate to="/" />
+                <Navigate to="/dashboard" />
               )
             }
           />
