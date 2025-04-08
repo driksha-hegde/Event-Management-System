@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
-import "./Profile.css"; 
+import "./Profile.css";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -80,98 +80,98 @@ const Profile = () => {
   };
 
   return (
-    <div className="fullscreen-background">
-      <div className="overlay"></div>
+    <div className="profile-fullscreen-background">
+      <div className="profile-overlay"></div>
 
       <motion.div
-        className="login-card"
+        className="profile-card"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.2, ease: "easeOut" }}
       >
-        <h3 className="fw-bold text-light">My Profile</h3>
+        <h3 className="fw-bold">My Profile</h3>
 
-        {message && <p className="small alert alert-success">{message}</p>}
+        {message && <p className="profile-message">{message}</p>}
 
         {user ? (
           <div>
             {!editing && !changingPassword ? (
               <>
-                <h4 className="text-light">{user.username}</h4>
-                <p className="text-muted"><strong>Email:</strong> {user.email}</p>
+                <h4>{user.username}</h4>
+                <p><strong>Email:</strong> {user.email}</p>
 
-                <div className="d-flex justify-content-center gap-3 mt-3">
-                  <button className="login-button" onClick={() => navigate("/dashboard")}>
+                <div className="d-flex justify-content-center gap-3 mt-3 flex-wrap">
+                  <button className="profile-button" onClick={() => navigate("/dashboard")}>
                     Back to Dashboard
                   </button>
-                  <button className="login-button" onClick={() => setEditing(true)}>
+                  <button className="profile-button" onClick={() => setEditing(true)}>
                     Update Profile
                   </button>
-                  <button className="login-button" onClick={() => setChangingPassword(true)}>
+                  <button className="profile-button" onClick={() => setChangingPassword(true)}>
                     Change Password
                   </button>
                 </div>
               </>
             ) : editing ? (
               <>
-                <div className="mb-3">
+                <div className="mb-3 text-start">
                   <label className="form-label fw-semibold text-light">Username</label>
-                  <input 
-                    type="text" 
-                    name="username" 
-                    className="form-control rounded-3"
-                    value={updatedData.username} 
-                    onChange={handleChange} 
+                  <input
+                    type="text"
+                    name="username"
+                    className="profile-input"
+                    value={updatedData.username}
+                    onChange={handleChange}
                   />
                 </div>
-                <div className="mb-3">
+                <div className="mb-3 text-start">
                   <label className="form-label fw-semibold text-light">Email</label>
-                  <input 
-                    type="email" 
-                    name="email" 
-                    className="form-control rounded-3"
-                    value={updatedData.email} 
-                    onChange={handleChange} 
+                  <input
+                    type="email"
+                    name="email"
+                    className="profile-input"
+                    value={updatedData.email}
+                    onChange={handleChange}
                   />
                 </div>
 
                 <div className="d-flex justify-content-center gap-3">
-                  <button className="login-button" onClick={handleUpdate}>
+                  <button className="profile-button" onClick={handleUpdate}>
                     Save Changes
                   </button>
-                  <button className="login-button" onClick={() => setEditing(false)}>
+                  <button className="profile-button" onClick={() => setEditing(false)}>
                     Cancel
                   </button>
                 </div>
               </>
             ) : (
               <>
-                <div className="mb-3">
+                <div className="mb-3 text-start">
                   <label className="form-label fw-semibold text-light">Current Password</label>
-                  <input 
-                    type="password" 
-                    name="currentPassword" 
-                    className="form-control rounded-3"
-                    value={passwordData.currentPassword} 
-                    onChange={handlePasswordChange} 
+                  <input
+                    type="password"
+                    name="currentPassword"
+                    className="profile-input"
+                    value={passwordData.currentPassword}
+                    onChange={handlePasswordChange}
                   />
                 </div>
-                <div className="mb-3">
+                <div className="mb-3 text-start">
                   <label className="form-label fw-semibold text-light">New Password</label>
-                  <input 
-                    type="password" 
-                    name="newPassword" 
-                    className="form-control rounded-3"
-                    value={passwordData.newPassword} 
-                    onChange={handlePasswordChange} 
+                  <input
+                    type="password"
+                    name="newPassword"
+                    className="profile-input"
+                    value={passwordData.newPassword}
+                    onChange={handlePasswordChange}
                   />
                 </div>
 
                 <div className="d-flex justify-content-center gap-3">
-                  <button className="login-button" onClick={handlePasswordUpdate}>
+                  <button className="profile-button" onClick={handlePasswordUpdate}>
                     Change Password
                   </button>
-                  <button className="login-button" onClick={() => setChangingPassword(false)}>
+                  <button className="profile-button" onClick={() => setChangingPassword(false)}>
                     Cancel
                   </button>
                 </div>
