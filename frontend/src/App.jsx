@@ -1,7 +1,7 @@
-// src/App.jsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
+// Components & Pages
 import Login from "./components/Login";
 import Register from "./components/Register";
 import NavbarPublic from "./components/NavbarPublic";
@@ -15,15 +15,17 @@ import RegisteredEvents from "./pages/RegisteredEvents";
 import AllUsers from "./pages/AllUsers";
 import AllRegistrations from "./pages/AllRegistrations";
 import ManageRoles from "./pages/ManageRoles";
-import MyEvents from "./pages/MyEvents"; // ✅ Added for event manager's events
-
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import MyEvents from "./pages/MyEvents";
+import MyAttendees from "./pages/MyAttendees"; // ✅ View attendees route
 
 // Stripe
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import PaymentForm from "./components/PaymentForm";
+
+// Bootstrap
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 const stripePromise = loadStripe("pk_test_51R91yCQPEb3UJG4rJvyLve1Kiq0x3dVmXVX9qEc0zCRhRAkj85fEglvtBALkj3WWErbi234zl3sAegxFsogBm8sO00rvp69R6f");
 
@@ -51,16 +53,20 @@ const App = () => {
 
   return (
     <Router>
-      {isLoggedIn ? <NavbarPrivate onLogout={() => setIsLoggedIn(false)} /> : <NavbarPublic />}
+      {isLoggedIn ? (
+        <NavbarPrivate onLogout={() => setIsLoggedIn(false)} />
+      ) : (
+        <NavbarPublic />
+      )}
 
       <div className="container mt-5">
         <Routes>
-          {/* Public */}
+          {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Payment */}
+          {/* Stripe Payment */}
           <Route
             path="/payment"
             element={
@@ -74,10 +80,15 @@ const App = () => {
             }
           />
 
-          {/* Protected */}
+          {/* Protected Routes for All Users */}
           <Route path="/dashboard" element={isLoggedIn ? <Dashboard userRole={userRole} /> : <Navigate to="/" />} />
           <Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/" />} />
-          <Route path="/event/register" element={isLoggedIn ? <RegistrationForm /> : <Navigate to="/login" />} />
+          <Route
+            path="/event/register"
+            element={isLoggedIn ? <RegistrationForm /> : <Navigate to="/login" />}
+          />
+
+          {/* Event Edit: Admin & Event Manager */}
           <Route
             path="/event/edit/:eventId"
             element={
@@ -88,6 +99,8 @@ const App = () => {
               )
             }
           />
+
+          {/* Attendee Only */}
           <Route
             path="/registered-events"
             element={
@@ -99,7 +112,7 @@ const App = () => {
             }
           />
 
-          {/* ✅ Event Manager Only: My Events */}
+          {/* Event Manager Only */}
           <Route
             path="/my-events"
             element={
@@ -110,8 +123,18 @@ const App = () => {
               )
             }
           />
+          <Route
+            path="/my-attendees/:eventId"
+            element={
+              isLoggedIn && userRole === "event_manager" ? (
+                <MyAttendees />
+              ) : (
+                <Navigate to="/" />
+              )
+            }
+          />
 
-          {/* ✅ Admin Only Routes */}
+          {/* Admin Only */}
           <Route
             path="/admin/users"
             element={
@@ -137,6 +160,18 @@ const App = () => {
             element={
               isLoggedIn && userRole === "admin" ? (
                 <ManageRoles />
+              ) : (
+                <Navigate to="/" />
+              )
+            }
+          />
+
+          {/* Admin & Event Manager: All Attendees */}
+          <Route
+            path="/attendees"
+            element={
+              isLoggedIn && (userRole === "admin" || userRole === "event_manager") ? (
+                <MyAttendees />
               ) : (
                 <Navigate to="/" />
               )

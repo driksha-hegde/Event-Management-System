@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "./MyEvents.css";
+import { useNavigate } from "react-router-dom";
 
 const MyEvents = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMyEvents = async () => {
       try {
-        const token = localStorage.getItem("token"); // Or however you store your auth token
+        const token = localStorage.getItem("token");
 
         const res = await axios.get("http://localhost:5000/api/events/my-events", {
           headers: {
@@ -17,9 +20,11 @@ const MyEvents = () => {
           },
         });
 
+        console.log("Events received:", res.data);
         setEvents(res.data);
         setLoading(false);
       } catch (err) {
+        console.error("Error fetching events:", err);
         setError("Failed to fetch your events");
         setLoading(false);
       }
@@ -28,28 +33,62 @@ const MyEvents = () => {
     fetchMyEvents();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p className="text-red-600">{error}</p>;
+  const handleViewAttendees = (eventId) => {
+    navigate(`/my-attendees/${eventId}`);
+  };
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">📋 My Created Events</h2>
-      {events.length === 0 ? (
-        <p>No events created yet.</p>
-      ) : (
-        <ul className="space-y-4">
-          {events.map((event) => (
-            <li key={event._id} className="border rounded p-4 shadow">
-              <h3 className="text-xl font-semibold">{event.title}</h3>
-              <p><strong>Date:</strong> {event.date}</p>
-              <p><strong>Time:</strong> {event.time}</p>
-              <p><strong>Location:</strong> {event.location}</p>
-              <p><strong>Fee:</strong> ₹{event.registrationFee}</p>
-              <p><strong>Description:</strong> {event.description}</p>
-            </li>
-          ))}
-        </ul>
-      )}
+    <div>
+      <div className="my-events-background"></div>
+      <div className="my-events-overlay"></div>
+
+      <div className="my-events-card">
+        <h2 className="table-title">My Created Events</h2>
+
+        {loading ? (
+          <p className="text-center">Loading...</p>
+        ) : error ? (
+          <p className="text-center text-red-500">{error}</p>
+        ) : events.length === 0 ? (
+          <p className="text-center">No events created yet.</p>
+        ) : (
+          <div className="table-wrapper">
+            <table className="custom-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Location</th>
+                  <th>Fee (₹)</th>
+                  <th>Description</th>
+                  <th>Attendees</th>
+                </tr>
+              </thead>
+              <tbody>
+                {events.map((event) => (
+                  <tr key={event._id}>
+                    <td>{event.title}</td>
+                    <td>{event.date}</td>
+                    <td>{event.time}</td>
+                    <td>{event.location}</td>
+                    <td>{event.registrationFee}</td>
+                    <td>{event.description}</td>
+                    <td>
+                      <button
+                        className="view-attendees-btn"
+                        onClick={() => handleViewAttendees(event._id)}
+                      >
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
