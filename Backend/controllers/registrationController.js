@@ -74,3 +74,23 @@ exports.getRegistrationsByEvent = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+
+// ✅ Get attendees for a specific event (used by Event Manager/Admin)
+exports.getAttendeesByEvent = async (req, res) => {
+    try {
+        const { eventId } = req.params;
+
+        const attendees = await Registration.find({ event: eventId })
+            .populate("user", "name email role")
+            .select("name email phone checkInTime checkOutTime");
+
+        if (!attendees.length) {
+            return res.status(404).json({ message: "No attendees found for this event" });
+        }
+
+        res.status(200).json({ attendees });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
