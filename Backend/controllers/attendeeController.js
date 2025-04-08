@@ -116,14 +116,21 @@ exports.getEventAttendees = async (req, res) => {
 };
 // ✅ Get all events the logged-in attendee has registered for
 exports.getMyRegisteredEvents = async (req, res) => {
-    try {
-      const userId = req.user._id;
-  
-      const registrations = await Registration.find({ user: userId })
-        .populate("event")
-        .sort({ createdAt: -1 });
-  
-      const formatted = registrations.map((reg) => ({
+  try {
+    console.log("🔍 req.user:", req.user);
+
+    const userId = req.user._id;
+    console.log("🆔 userId:", userId);
+
+    const registrations = await Registration.find({ user: userId })
+      .populate("event")
+      .sort({ createdAt: -1 });
+
+    console.log("📦 Raw registrations:", registrations);
+
+    const formatted = registrations
+      .filter(reg => reg.event) // Prevents crashes if event is missing
+      .map((reg) => ({
         _id: reg._id,
         event: {
           _id: reg.event._id,
@@ -136,11 +143,12 @@ exports.getMyRegisteredEvents = async (req, res) => {
         checkOutTime: reg.checkOutTime,
         paymentStatus: reg.paymentStatus,
       }));
-  
-      res.status(200).json({ events: registrations });
-    } catch (err) {
-      console.error("🚨 Error fetching registered events:", err);
-      res.status(500).json({ message: "Server error fetching registered events." });
-    }
-  };
-  
+
+    console.log("✅ Formatted registrations:", formatted);
+
+    res.status(200).json({ events: formatted });
+  } catch (err) {
+    console.error("🚨 Error fetching registered events:", err);
+    res.status(500).json({ message: "Server error fetching registered events." });
+  }
+};

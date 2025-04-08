@@ -4,7 +4,7 @@ import axios from "../api/api";
 import "../styles/EventList.css";
 
 
-const EventList = ({ events, userRole }) => {
+const EventList = ({ events, setEventList, userRole }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ const EventList = ({ events, userRole }) => {
   const handleDeleteClick = async (eventId) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this event?");
     if (!confirmDelete) return;
-
+  
     try {
       const token = localStorage.getItem("token");
       await axios.delete(`/events/${eventId}`, {
@@ -30,13 +30,19 @@ const EventList = ({ events, userRole }) => {
           Authorization: `Bearer ${token}`,
         },
       });
+  
+      // ✅ Remove event from state (no reload)
+      setEventList((prevEvents) => prevEvents.filter((event) => event._id !== eventId));
+  
       alert("Event deleted successfully.");
-      window.location.reload();
     } catch (error) {
-      console.error("Error deleting event:", error.response?.data || error);
+      console.error("Error deleting event:", error.response?.data || error.message);
       alert("Failed to delete event.");
     }
   };
+  
+  
+  
 
   return (
     <div className="event-container">

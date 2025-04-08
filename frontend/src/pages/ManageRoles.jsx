@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "./ManageRoles.css";
+
 
 const ManageRoles = () => {
   const [users, setUsers] = useState([]);
@@ -52,44 +54,57 @@ const ManageRoles = () => {
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">🛠️ Manage User Roles</h2>
+    <div className="fullscreen-background">
+    <div className="overlay"></div>
+    <div className="all-registrations-card">
+      <h2 className="table-title">🛠️ Manage User Roles</h2>
       {message && <p className="mb-4 text-sm text-blue-600">{message}</p>}
       {loading ? (
-        <p>Loading users...</p>
+        <p className="text-center">Loading users...</p>
       ) : (
-        <table className="min-w-full border rounded shadow">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="p-2">Username</th>
-              <th className="p-2">Email</th>
-              <th className="p-2">Current Role</th>
-              <th className="p-2">Update Role</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Array.isArray(users) && users.map((user) => (
-              <tr key={user._id} className="border-t">
-                <td className="p-2">{user.username}</td>
-                <td className="p-2">{user.email}</td>
-                <td className="p-2 capitalize">{user.role}</td>
-                <td className="p-2">
-                  <select
-                    value={user.role}
-                    onChange={(e) => updateRole(user._id, e.target.value)}
-                    className="border p-1 rounded"
-                  >
-                    <option value="attendee">Attendee</option>
-                    <option value="event_manager">Event Manager</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                </td>
+        <div className="table-wrapper">
+          <table className="custom-table">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Current Role</th>
+                <th>Update Role</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr key={user._id}>
+                  <td>{user.username}</td>
+                  <td>{user.email}</td>
+                  <td className="capitalize">{user.role}</td>
+                  <td>
+                    <select
+                      value={user.role}
+                      onChange={(e) => updateRole(user._id, e.target.value)}
+                      className="border px-2 py-1 rounded bg-white"
+                    >
+                      <option value="attendee">Attendee</option>
+                      <option value="event_manager">Event Manager</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </td>
+                </tr>
+              ))}
+              {users.length === 0 && (
+                <tr>
+                  <td colSpan="4" className="text-center">
+                    No users found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
+  </div>
+  
   );
 };
 
