@@ -1,6 +1,7 @@
 // src/App.jsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+
 import Login from "./components/Login";
 import Register from "./components/Register";
 import NavbarPublic from "./components/NavbarPublic";
@@ -13,6 +14,7 @@ import EditEvent from "./components/editEvent";
 import RegisteredEvents from "./pages/RegisteredEvents";
 import AllUsers from "./pages/AllUsers";
 import AllRegistrations from "./pages/AllRegistrations";
+import ManageRoles from "./pages/ManageRoles"; // ✅ New import
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -43,7 +45,6 @@ const App = () => {
 
     checkAuth();
     window.addEventListener("storage", checkAuth);
-
     return () => window.removeEventListener("storage", checkAuth);
   }, []);
 
@@ -113,6 +114,16 @@ const App = () => {
             element={
               isLoggedIn && userRole === "admin" ? (
                 <AllRegistrations />
+              ) : (
+                <Navigate to="/" />
+              )
+            }
+          />
+          <Route
+            path="/admin/manage-roles"
+            element={
+              isLoggedIn && userRole === "admin" ? (
+                <ManageRoles />
               ) : (
                 <Navigate to="/" />
               )

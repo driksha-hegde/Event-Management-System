@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "../api/api";
 import "../styles/EventList.css";
 
+
 const EventList = ({ events, userRole }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const navigate = useNavigate();

@@ -114,7 +114,7 @@ exports.updateEvent = async (req, res) => {
     console.log("Event createdBy:", event.createdBy.toString());
     console.log("User trying to update", req.user._id);
 
-    if (event.createdBy.toString() !== req.user._id.toString()) {
+    if (event.createdBy.toString() !== req.user._id.toString()  && req.user.role !== 'admin') {
       return res.status(403).json({ message: "Unauthorized to update this event" });
     }
 
@@ -136,11 +136,11 @@ exports.deleteEvent = async (req, res) => {
     console.log("Event createdBy:", event.createdBy.toString());
     console.log("User trying to delete:", req.user._id);
 
-    if (event.createdBy.toString() !== req.user._id.toString()) {
+    if (event.createdBy.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
       return res.status(403).json({ message: "Unauthorized to delete this event" });
     }
     
-
+  
     await event.deleteOne();
     res.json({ message: "Event deleted successfully" });
   } catch (error) {

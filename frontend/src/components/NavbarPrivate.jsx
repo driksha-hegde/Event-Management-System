@@ -36,52 +36,54 @@ const NavbarPrivate = () => {
       <div className={`sidebar ${isOpen ? "open" : ""}`}>
         <button className="close-btn" onClick={() => setIsOpen(false)}>×</button>
 
+        {/* Common Link: Profile */}
         <Link to="/profile" className="sidebar-item" onClick={() => setIsOpen(false)}>
           Profile
         </Link>
 
+        {/* Admin + Event Manager: Create Event */}
         {(userRole === "event_manager" || userRole === "admin") && (
           <button className="sidebar-item" onClick={openCreateEventModal}>
             Create Event
           </button>
         )}
 
+        {/* Attendee-only: Registered Events */}
         {userRole === "attendee" && (
           <Link to="/registered-events" className="sidebar-item" onClick={() => setIsOpen(false)}>
             Registered Events
           </Link>
         )}
 
-        {/* ✅ Admin-only Links */}
+        {/* Admin-only: Admin Controls */}
         {userRole === "admin" && (
           <>
-            <Link
-              to="/admin/users"
-              className="sidebar-item"
-              onClick={() => setIsOpen(false)}
-            >
+            <Link to="/admin/users" className="sidebar-item" onClick={() => setIsOpen(false)}>
               All Users
             </Link>
 
-            <Link
-              to="/admin/registrations"
-              className="sidebar-item"
-              onClick={() => setIsOpen(false)}
-            >
+            <Link to="/admin/registrations" className="sidebar-item" onClick={() => setIsOpen(false)}>
               All Registrations
+            </Link>
+
+            <Link to="/admin/manage-roles" className="sidebar-item" onClick={() => setIsOpen(false)}>
+              Manage Roles
             </Link>
           </>
         )}
 
+        {/* Common Link: Dashboard */}
         <button className="sidebar-item" onClick={() => navigate("/dashboard")}>
           Dashboard
         </button>
 
+        {/* Common Link: Logout */}
         <button className="sidebar-item logout" onClick={handleLogout}>
           Logout
         </button>
       </div>
 
+      {/* Modal for Creating Event */}
       <div
         className="modal fade"
         id="createEventModal"
@@ -97,7 +99,7 @@ const NavbarPrivate = () => {
               <button
                 type="button"
                 className="btn-close"
-                data-bs-dismiss="modal"
+                onClick={closeCreateEventModal}
                 aria-label="Close"
               ></button>
             </div>

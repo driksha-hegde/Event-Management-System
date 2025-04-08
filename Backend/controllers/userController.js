@@ -79,3 +79,45 @@ exports.updatePassword = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+
+// ✅ Update User Role (Admin Only)
+exports.updateUserRole = async (req, res) => {
+    try {
+      const { userId, newRole } = req.body;
+  
+      // Ensure the requestor is admin
+      if (req.user.role !== "admin") {
+        return res.status(403).json({ message: "Only admins can update roles" });
+      }
+  
+      // Validate role
+      const validRoles = ["attendee", "event_manager", "admin"];
+      if (!validRoles.includes(newRole)) {
+        return res.status(400).json({ message: "Invalid role provided" });
+      }
+  
+      // Find user
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      // Update and save role
+      user.role = newRole;
+      await user.save();
+  
+      res.status(200).json({
+        message: `✅ User role updated to ${newRole}`,
+        user: {
+          _id: user._id,
+          username: user.username,
+          email: user.email,
+          role: user.role,
+        },
+      });
+    } catch (error) {
+      console.error("❌ Error updating role:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  };
+

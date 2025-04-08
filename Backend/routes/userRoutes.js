@@ -1,16 +1,22 @@
 const express = require("express");
-const { getProfile, updateProfile, updatePassword } = require("../controllers/userController");
+const {
+  getProfile,
+  updateProfile,
+  updatePassword,
+  updateUserRole, // ✅ Import the controller
+} = require("../controllers/userController");
+
 const authMiddleware = require("../middleware/authMiddleware");
+const authorize = require("../middleware/authorize"); // ✅ Import the role-based authorization middleware
 
 const router = express.Router();
 
-// ✅ Get Profile (Requires Authentication)
+// 🧑‍💻 Authenticated routes
 router.get("/profile", authMiddleware(), getProfile);
-
-// ✅ Update Profile
 router.put("/profile", authMiddleware(), updateProfile);
-
-// ✅ Update Password
 router.put("/password", authMiddleware(), updatePassword);
+
+// 🛠️ Admin-only route to update any user's role
+router.put("/update-role", authMiddleware(), authorize(["admin"]), updateUserRole);
 
 module.exports = router;

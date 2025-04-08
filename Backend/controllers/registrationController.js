@@ -38,21 +38,24 @@ exports.registerForEvent = async (req, res) => {
 };
 
 // ✅ Get all registrations
+// ✅ Get all registrations
 exports.getAllRegistrations = async (req, res) => {
     try {
         const registrations = await Registration.find()
-            .populate("event", "title date")
-            .populate("user", "name email");
+            .populate("event", "title date location") // added 'location'
+            .populate("user", "email");
 
         if (!registrations.length) {
             return res.status(404).json({ message: "No registrations found" });
         }
 
-        res.status(200).json(registrations);
+        // ✅ FIXED: Wrap the response properly for frontend
+        res.status(200).json({ registrations });
     } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+
 
 // ✅ Get registrations for a specific event
 exports.getRegistrationsByEvent = async (req, res) => {

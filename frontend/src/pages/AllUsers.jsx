@@ -1,6 +1,7 @@
 // src/pages/AllUsers.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "./AllUsers.css"; // Keep this line to load the styles
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -14,7 +15,7 @@ const AllUsers = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setUsers(res.data.users || []);
+        setUsers(res.data || []);
       } catch (err) {
         console.error("Failed to fetch users", err);
       }
@@ -23,26 +24,40 @@ const AllUsers = () => {
     fetchUsers();
   }, []);
 
+
+
   return (
-    <div>
-      <h2>All Users</h2>
-      <table className="table table-bordered">
-        <thead>
-          <tr>
-            <th>Email</th>
-            <th>Role</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((u) => (
-            <tr key={u._id}>
-              <td>{u.email}</td>
-              <td>{u.role}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <>
+      <div className="all-users-background"></div>
+      <div className="all-users-overlay"></div>
+      <div className="all-users-card">
+        <h2 className="table-title">All Users</h2>
+        {users.length > 0 ? (
+          <div className="table-wrapper">
+            <table className="custom-table">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((u) => (
+                  <tr key={u._id}>
+                    <td>{u.username}</td>
+                    <td>{u.email}</td>
+                    <td>{u.role}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="text-center">No users found.</p>
+        )}
+      </div>
+    </>
   );
 };
 
