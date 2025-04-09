@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import * as jwt_decode from "jwt-decode"; // ✅ Correct import for Vite
+import { jwtDecode } from "jwt-decode"; // ✅ Correct way for the latest version// ✅ Correct import for Vite
 import axios from "../api/api";
 import "../styles/EventList.css";
 
@@ -14,7 +14,7 @@ const EventList = ({ events, setEventList, userRole }) => {
 
   if (token) {
     try {
-      const decodedToken = jwt_decode.default(token); // ✅ Use .default to access decode
+      const decodedToken = jwtDecode.default(token); // ✅ Use .default to access decode
       userId = decodedToken.userId;
     } catch (error) {
       console.error("Invalid token:", error);

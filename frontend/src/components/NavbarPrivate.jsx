@@ -8,8 +8,8 @@ const NavbarPrivate = () => {
   const [isOpen, setIsOpen] = useState(false);
   const createEventModalRef = useRef(null);
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
-  const userRole = user?.role;
+
+  const userRole = localStorage.getItem("role") || ""; // ✅ Always up-to-date
 
   const openCreateEventModal = () => {
     setIsOpen(false);
@@ -25,6 +25,7 @@ const NavbarPrivate = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("role");
     setIsOpen(false);
     navigate("/");
   };
@@ -36,55 +37,46 @@ const NavbarPrivate = () => {
       <div className={`sidebar ${isOpen ? "open" : ""}`}>
         <button className="close-btn" onClick={() => setIsOpen(false)}>×</button>
 
-        {/* Common Link: Profile */}
         <Link to="/profile" className="sidebar-item" onClick={() => setIsOpen(false)}>
           Profile
         </Link>
 
-        {/* Admin + Event Manager: Create Event */}
         {(userRole === "event_manager" || userRole === "admin") && (
           <button className="sidebar-item" onClick={openCreateEventModal}>
             Create Event
           </button>
         )}
 
-        {/* Event Manager-only: My Events */}
         {userRole === "event_manager" && (
           <Link to="/my-events" className="sidebar-item" onClick={() => setIsOpen(false)}>
             My Events
           </Link>
         )}
 
-        {/* Attendee-only: Registered Events */}
         {userRole === "attendee" && (
           <Link to="/registered-events" className="sidebar-item" onClick={() => setIsOpen(false)}>
             Registered Events
           </Link>
         )}
 
-        {/* Admin-only: Admin Controls */}
         {userRole === "admin" && (
           <>
             <Link to="/admin/users" className="sidebar-item" onClick={() => setIsOpen(false)}>
               All Users
             </Link>
-
             <Link to="/admin/registrations" className="sidebar-item" onClick={() => setIsOpen(false)}>
               All Registrations
             </Link>
-
             <Link to="/admin/manage-roles" className="sidebar-item" onClick={() => setIsOpen(false)}>
               Manage Roles
             </Link>
           </>
         )}
 
-        {/* Common Link: Dashboard */}
         <button className="sidebar-item" onClick={() => navigate("/dashboard")}>
           Dashboard
         </button>
 
-        {/* Common Link: Logout */}
         <button className="sidebar-item logout" onClick={handleLogout}>
           Logout
         </button>

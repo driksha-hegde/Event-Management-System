@@ -20,16 +20,21 @@ const Login = ({ setIsLoggedIn }) => {
     setError("");
 
     try {
-      // 🔁 Refresh localStorage before login
+      // 🔁 Clear previous session
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      localStorage.removeItem("role");
 
       const response = await api.post("/auth/login", formData);
       const { token, user } = response.data;
-
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
-      setIsLoggedIn(true);
+      localStorage.setItem("role", user.role); // Optional, since role is already inside `user`
+      
+      window.dispatchEvent(new Event("storage")); // ✅ Triggers App to re-check auth
+      
+      // No need to manually call setIsLoggedIn(true) here, because App.jsx handles it
+      
       navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
