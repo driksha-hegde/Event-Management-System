@@ -112,19 +112,21 @@ exports.updateEvent = async (req, res) => {
     if (!event) return res.status(404).json({ message: "Event not found" });
 
     console.log("Event createdBy:", event.createdBy.toString());
-    console.log("User trying to update", req.user._id);
+    console.log("User trying to update:", req.user._id);
+    console.log("User role:", req.user.role);
 
-    if (event.createdBy.toString() !== req.user._id.toString()  && req.user.role !== 'admin') {
+    // ✅ Admins can update anything, event managers only their own events
+    if (req.user.role !== 'admin' && event.createdBy.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Unauthorized to update this event" });
     }
 
-    // Update fields
     const updated = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.json(updated);
   } catch (error) {
     res.status(500).json({ message: "Error updating event", error: error.message });
   }
 };
+
 
 
 // ✅ Delete Event (Only the creator can delete)
@@ -135,18 +137,20 @@ exports.deleteEvent = async (req, res) => {
 
     console.log("Event createdBy:", event.createdBy.toString());
     console.log("User trying to delete:", req.user._id);
+    console.log("User role:", req.user.role);
 
-    if (event.createdBy.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+    // ✅ Admins can delete anything, event managers only their own events
+    if (req.user.role !== 'admin' && event.createdBy.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Unauthorized to delete this event" });
     }
-    
-  
+
     await event.deleteOne();
     res.json({ message: "Event deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error deleting event", error: error.message });
   }
 };
+
 
 // Get events created by the logged-in event manager
 exports.getMyEvents = async (req, res) => {

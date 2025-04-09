@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "../api/api";
 import "../styles/EventList.css";
 
-
 const EventList = ({ events, setEventList, userRole }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const navigate = useNavigate();
@@ -12,6 +11,13 @@ const EventList = ({ events, setEventList, userRole }) => {
   const closeModal = () => setSelectedEvent(null);
 
   const handleRegisterClick = (event) => {
+    // ✅ Only allow register if logged in as attendee
+    const token = localStorage.getItem("token");
+    if (!token || userRole !== "attendee") {
+      alert("Please log in as an attendee to register.");
+      return;
+    }
+
     navigate(`/event/register?eventId=${event._id}&fee=${event.registrationFee}`);
   };
 
@@ -22,7 +28,7 @@ const EventList = ({ events, setEventList, userRole }) => {
   const handleDeleteClick = async (eventId) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this event?");
     if (!confirmDelete) return;
-  
+
     try {
       const token = localStorage.getItem("token");
       await axios.delete(`/events/${eventId}`, {
@@ -30,19 +36,16 @@ const EventList = ({ events, setEventList, userRole }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-  
-      // ✅ Remove event from state (no reload)
+
+      // ✅ Remove deleted event from UI
       setEventList((prevEvents) => prevEvents.filter((event) => event._id !== eventId));
-  
+
       alert("Event deleted successfully.");
     } catch (error) {
       console.error("Error deleting event:", error.response?.data || error.message);
       alert("Failed to delete event.");
     }
   };
-  
-  
-  
 
   return (
     <div className="event-container">
@@ -89,6 +92,7 @@ const EventList = ({ events, setEventList, userRole }) => {
               <p><strong>Registration Fee:</strong> ₹{selectedEvent.registrationFee}</p>
             )}
 
+            {/* ✅ Only attendees see the Register button */}
             {userRole === "attendee" && (
               <button
                 className="btn btn-success"
