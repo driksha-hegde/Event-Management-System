@@ -159,11 +159,12 @@ const RegisteredEvents = () => {
                     <td>
                       {registration.checkOutTime ? (
                         <button
-                          className="btn btn-info btn-sm"
-                          onClick={() => handleGiveFeedback(registration.event)}
-                        >
-                          Give Feedback
-                        </button>
+                        className="btn btn-orange btn-sm"
+                        onClick={() => handleGiveFeedback(registration.event)}
+                      >
+                        Give Feedback
+                      </button>
+                      
                       ) : (
                         <button className="btn btn-secondary btn-sm" disabled>
                           Give Feedback

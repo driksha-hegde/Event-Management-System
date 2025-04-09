@@ -1,9 +1,93 @@
-.container {
-    max-width: 800px;
-    margin: auto;
-  }
-  
-  h2 {
-    font-weight: bold;
-  }
-  
+.reports-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: url("/landing-image.jpg") no-repeat center center fixed;
+  background-size: cover;
+  z-index: -2;
+}
+
+.reports-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+
+.reports-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* Report Cards */
+.report-section {
+  flex: 1;
+  min-width: 350px;
+  max-width: 500px;
+  max-height: 75vh;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 1.5rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(12px);
+  color: white;
+}
+
+/* Scrollbar */
+.report-section::-webkit-scrollbar {
+  width: 8px;
+}
+
+.report-section::-webkit-scrollbar-thumb {
+  background: #ff9800;
+  border-radius: 8px;
+}
+
+.report-section::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Tables */
+.report-section table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  color: white;
+}
+
+.report-section th,
+.report-section td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.report-section th {
+  background: linear-gradient(135deg, #fbc02d, #ff7043);
+  color: #000;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.report-section h2 {
+  margin-top: 0;
+  font-size: 1.4rem;
+  color: #ffc371;
+  border-bottom: 2px solid #ffcc80;
+  padding-bottom: 0.3rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}

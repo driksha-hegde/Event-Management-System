@@ -55,12 +55,17 @@ exports.getEventPerformance = async (req, res) => {
           date: reg.event.date,
           totalRegistrations: 0,
           checkIns: 0,
+          checkOuts:0
         };
       }
 
       eventMap[eventId].totalRegistrations++;
       if (reg.checkInTime) {
         eventMap[eventId].checkIns++;
+      }
+
+      if (reg.checkOutTime) {
+        eventMap[eventId].checkOuts++; 
       }
     });
 
