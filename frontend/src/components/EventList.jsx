@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import * as jwt_decode from "jwt-decode"; // ✅ Correct import for Vite
 import axios from "../api/api";
 import "../styles/EventList.css";
 
@@ -7,17 +8,27 @@ const EventList = ({ events, setEventList, userRole }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const navigate = useNavigate();
 
+  // ✅ Extract userId from token
+  const token = localStorage.getItem("token");
+  let userId = null;
+
+  if (token) {
+    try {
+      const decodedToken = jwt_decode.default(token); // ✅ Use .default to access decode
+      userId = decodedToken.userId;
+    } catch (error) {
+      console.error("Invalid token:", error);
+    }
+  }
+
   const openModal = (event) => setSelectedEvent(event);
   const closeModal = () => setSelectedEvent(null);
 
   const handleRegisterClick = (event) => {
-    // ✅ Only allow register if logged in as attendee
-    const token = localStorage.getItem("token");
     if (!token || userRole !== "attendee") {
       alert("Please log in as an attendee to register.");
       return;
     }
-
     navigate(`/event/register?eventId=${event._id}&fee=${event.registrationFee}`);
   };
 
@@ -30,16 +41,13 @@ const EventList = ({ events, setEventList, userRole }) => {
     if (!confirmDelete) return;
 
     try {
-      const token = localStorage.getItem("token");
       await axios.delete(`/events/${eventId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      // ✅ Remove deleted event from UI
       setEventList((prevEvents) => prevEvents.filter((event) => event._id !== eventId));
-
       alert("Event deleted successfully.");
     } catch (error) {
       console.error("Error deleting event:", error.response?.data || error.message);
@@ -62,7 +70,7 @@ const EventList = ({ events, setEventList, userRole }) => {
                   View
                 </button>
 
-                {(userRole === "admin" || userRole === "event_manager") && (
+                {(userRole === "admin" || (userRole === "event_manager" && event.createdBy === userId)) && (
                   <>
                     <button className="btn" onClick={() => handleEditClick(event._id)}>
                       Edit
@@ -92,7 +100,6 @@ const EventList = ({ events, setEventList, userRole }) => {
               <p><strong>Registration Fee:</strong> ₹{selectedEvent.registrationFee}</p>
             )}
 
-            {/* ✅ Only attendees see the Register button */}
             {userRole === "attendee" && (
               <button
                 className="btn btn-success"
