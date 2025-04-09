@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import FeedbackModal from "../components/FeedbackModal";
 import "./RegisteredEvents.css";
 
 const RegisteredEvents = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,7 +16,7 @@ const RegisteredEvents = () => {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        console.warn("⚠️ No token found. Redirecting to login.");
+        console.warn("\u26A0\uFE0F No token found. Redirecting to login.");
         navigate("/");
         return;
       }
@@ -26,7 +28,7 @@ const RegisteredEvents = () => {
 
         setEvents(res.data.events || []);
       } catch (err) {
-        console.error("❌ Fetch Error:", err);
+        console.error("\u274C Fetch Error:", err);
         if (err.response?.status === 401 || err.response?.status === 403) {
           navigate("/");
         } else {
@@ -57,7 +59,7 @@ const RegisteredEvents = () => {
         )
       );
     } catch (err) {
-      console.error("❌ Check-in failed:", err);
+      console.error("\u274C Check-in failed:", err);
       alert("Check-in failed.");
     }
   };
@@ -79,13 +81,9 @@ const RegisteredEvents = () => {
         )
       );
     } catch (err) {
-      console.error("❌ Check-out failed:", err);
+      console.error("\u274C Check-out failed:", err);
       alert("Check-out failed.");
     }
-  };
-
-  const handleGiveFeedback = (event) => {
-    navigate(`/feedback/${event._id}`);
   };
 
   const formatDateTime = (date) => {
@@ -159,12 +157,11 @@ const RegisteredEvents = () => {
                     <td>
                       {registration.checkOutTime ? (
                         <button
-                        className="btn btn-orange btn-sm"
-                        onClick={() => handleGiveFeedback(registration.event)}
-                      >
-                        Give Feedback
-                      </button>
-                      
+                          className="btn btn-orange btn-sm"
+                          onClick={() => setSelectedEvent(registration.event)}
+                        >
+                          Give Feedback
+                        </button>
                       ) : (
                         <button className="btn btn-secondary btn-sm" disabled>
                           Give Feedback
@@ -178,6 +175,13 @@ const RegisteredEvents = () => {
           </div>
         )}
       </div>
+
+      {selectedEvent && (
+        <FeedbackModal
+          selectedEvent={selectedEvent}
+          onClose={() => setSelectedEvent(null)}
+        />
+      )}
     </>
   );
 };

@@ -17,12 +17,9 @@ import AllRegistrations from "./pages/AllRegistrations";
 import ManageRoles from "./pages/ManageRoles";
 import MyEvents from "./pages/MyEvents";
 import MyAttendees from "./pages/MyAttendees";
-import FeedbackForm from "./pages/FeedbackForm";
 import EventPerformance from "./pages/EventPerformance";
 import Reports from './pages/Reports';
-import FeedbackPage from './pages/FeedbackPage';
-  // Adjust path as necessary
-
+import FeedbackPage from './pages/FeedbackPage'; // For admin view
 
 // Stripe
 import { Elements } from "@stripe/react-stripe-js";
@@ -127,16 +124,6 @@ const App = () => {
                 )
               }
             />
-            <Route
-              path="/feedback/:eventId"
-              element={
-                isLoggedIn && userRole === "attendee" ? (
-                  <FeedbackForm />
-                ) : (
-                  <Navigate to="/dashboard" />
-                )
-              }
-            />
 
             {/* Event Manager Only */}
             <Route
@@ -191,11 +178,11 @@ const App = () => {
                 )
               }
             />
-            <Route path="admin/reports" element={isLoggedIn ? <Reports /> : <Navigate to="/" />} />
+            <Route path="/admin/reports" element={isLoggedIn ? <Reports /> : <Navigate to="/" />} />
             <Route
-  path="/admin/feedback"
-  element={userRole === "admin" ? <FeedbackPage /> : <Navigate to="/dashboard" />}
-/>
+              path="/admin/feedback"
+              element={userRole === "admin" ? <FeedbackPage /> : <Navigate to="/dashboard" />}
+            />
 
             {/* Shared by Admin & Event Manager */}
             <Route

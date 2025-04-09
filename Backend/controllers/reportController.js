@@ -47,6 +47,7 @@ exports.getEventPerformance = async (req, res) => {
     const eventMap = {};
 
     registrations.forEach((reg) => {
+      if (!reg.event) return;
       const eventId = reg.event._id;
 
       if (!eventMap[eventId]) {

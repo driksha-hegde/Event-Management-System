@@ -9,22 +9,28 @@ const Reports = () => {
   const [error, setError] = useState('');
   const token = localStorage.getItem('token');
 
-  useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        const regReport = await getRegistrationReport(token);
-        const eventPerf = await getEventPerformance(token);
-        setRegistrationReport(regReport);
-        setEventPerformance(eventPerf);
-      } catch (err) {
-        setError('Failed to load reports');
-      } finally {
-        setLoading(false);
-      }
-    };
+useEffect(() => {
+  const fetchReports = async () => {
+    try {
+      const regReport = await getRegistrationReport(token);
+      console.log("✅ Registration report:", regReport);
 
-    fetchReports();
-  }, [token]);
+      const eventPerf = await getEventPerformance(token);
+      console.log("✅ Event performance:", eventPerf);
+
+      setRegistrationReport(regReport);
+      setEventPerformance(eventPerf);
+    } catch (err) {
+      console.error("❌ Error fetching reports:", err);
+      setError('Failed to load reports');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchReports();
+}, [token]);
+
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
