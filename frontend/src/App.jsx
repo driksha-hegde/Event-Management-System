@@ -10,13 +10,19 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import LandingPage from "./pages/LandingPage";
 import RegistrationForm from "./components/RegistrationForm";
-import EditEvent from "./components/editEvent";
+import EditEvent from "./components/EditEvent";
 import RegisteredEvents from "./pages/RegisteredEvents";
 import AllUsers from "./pages/AllUsers";
 import AllRegistrations from "./pages/AllRegistrations";
 import ManageRoles from "./pages/ManageRoles";
 import MyEvents from "./pages/MyEvents";
 import MyAttendees from "./pages/MyAttendees";
+import FeedbackForm from "./pages/FeedbackForm";
+import EventPerformance from "./pages/EventPerformance";
+import Reports from './pages/Reports';
+import FeedbackPage from './pages/FeedbackPage';
+  // Adjust path as necessary
+
 
 // Stripe
 import { Elements } from "@stripe/react-stripe-js";
@@ -90,19 +96,15 @@ const App = () => {
               }
             />
 
-            {/* Protected Routes */}
-            <Route
-              path="/dashboard"
-              element={isLoggedIn ? <Dashboard userRole={userRole} /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/profile"
-              element={isLoggedIn ? <Profile /> : <Navigate to="/" />}
-            />
+            {/* Shared Authenticated Routes */}
+            <Route path="/dashboard" element={isLoggedIn ? <Dashboard userRole={userRole} /> : <Navigate to="/" />} />
+            <Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/" />} />
             <Route
               path="/event/register"
               element={isLoggedIn ? <RegistrationForm /> : <Navigate to="/login" />}
             />
+
+            {/* Edit Event */}
             <Route
               path="/event/edit/:eventId"
               element={
@@ -113,6 +115,8 @@ const App = () => {
                 )
               }
             />
+
+            {/* Attendee-Only Pages */}
             <Route
               path="/registered-events"
               element={
@@ -123,6 +127,18 @@ const App = () => {
                 )
               }
             />
+            <Route
+              path="/feedback/:eventId"
+              element={
+                isLoggedIn && userRole === "attendee" ? (
+                  <FeedbackForm />
+                ) : (
+                  <Navigate to="/dashboard" />
+                )
+              }
+            />
+
+            {/* Event Manager Only */}
             <Route
               path="/my-events"
               element={
@@ -143,6 +159,8 @@ const App = () => {
                 )
               }
             />
+
+            {/* Admin Only */}
             <Route
               path="/admin/users"
               element={
@@ -168,6 +186,23 @@ const App = () => {
               element={
                 isLoggedIn && userRole === "admin" ? (
                   <ManageRoles />
+                ) : (
+                  <Navigate to="/" />
+                )
+              }
+            />
+            <Route path="admin/reports" element={isLoggedIn ? <Reports /> : <Navigate to="/" />} />
+            <Route
+  path="/admin/feedback"
+  element={userRole === "admin" ? <FeedbackPage /> : <Navigate to="/dashboard" />}
+/>
+
+            {/* Shared by Admin & Event Manager */}
+            <Route
+              path="/performance"
+              element={
+                isLoggedIn && (userRole === "admin" || userRole === "event_manager") ? (
+                  <EventPerformance />
                 ) : (
                   <Navigate to="/" />
                 )

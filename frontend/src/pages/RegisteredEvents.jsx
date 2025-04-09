@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./RegisteredEvents.css";
@@ -39,13 +39,6 @@ const RegisteredEvents = () => {
 
     fetchRegisteredEvents();
   }, [navigate]);
-
-  const formatDateTime = (date) => {
-    return new Date(date).toLocaleString("en-IN", {
-      dateStyle: "medium",
-      timeStyle: "short",
-    });
-  };
 
   const handleCheckIn = async (eventId) => {
     try {
@@ -91,6 +84,17 @@ const RegisteredEvents = () => {
     }
   };
 
+  const handleGiveFeedback = (event) => {
+    navigate(`/feedback/${event._id}`);
+  };
+
+  const formatDateTime = (date) => {
+    return new Date(date).toLocaleString("en-IN", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+  };
+
   if (loading) return <p className="text-center mt-5">Loading your registered events...</p>;
   if (error) return <p className="text-danger text-center mt-5">{error}</p>;
 
@@ -113,6 +117,7 @@ const RegisteredEvents = () => {
                   <th>Location</th>
                   <th>Check-in</th>
                   <th>Check-out</th>
+                  <th>Feedback</th>
                 </tr>
               </thead>
               <tbody>
@@ -148,6 +153,20 @@ const RegisteredEvents = () => {
                           disabled={!registration.checkInTime}
                         >
                           Check Out
+                        </button>
+                      )}
+                    </td>
+                    <td>
+                      {registration.checkOutTime ? (
+                        <button
+                          className="btn btn-info btn-sm"
+                          onClick={() => handleGiveFeedback(registration.event)}
+                        >
+                          Give Feedback
+                        </button>
+                      ) : (
+                        <button className="btn btn-secondary btn-sm" disabled>
+                          Give Feedback
                         </button>
                       )}
                     </td>

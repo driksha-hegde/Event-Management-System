@@ -9,17 +9,19 @@ const NavbarPrivate = () => {
   const createEventModalRef = useRef(null);
   const navigate = useNavigate();
 
-  const userRole = localStorage.getItem("role") || ""; // ✅ Always up-to-date
+  // Get user role from localStorage safely
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userRole = user?.role || "";
 
   const openCreateEventModal = () => {
-    setIsOpen(false);
+    setIsOpen(false); // Close sidebar
     const modalInstance = Modal.getOrCreateInstance(createEventModalRef.current);
     modalInstance.show();
   };
 
   const closeCreateEventModal = () => {
     const modalInstance = Modal.getInstance(createEventModalRef.current);
-    modalInstance.hide();
+    if (modalInstance) modalInstance.hide();
   };
 
   const handleLogout = () => {
@@ -32,25 +34,28 @@ const NavbarPrivate = () => {
 
   return (
     <>
-      <button className="menu-btn" onClick={() => setIsOpen(!isOpen)}>☰</button>
+      <button className="menu-btn" onClick={() => setIsOpen(!isOpen)} type="button">☰</button>
 
       <div className={`sidebar ${isOpen ? "open" : ""}`}>
-        <button className="close-btn" onClick={() => setIsOpen(false)}>×</button>
+        <button className="close-btn" onClick={() => setIsOpen(false)} type="button">×</button>
 
         <Link to="/profile" className="sidebar-item" onClick={() => setIsOpen(false)}>
           Profile
         </Link>
 
         {(userRole === "event_manager" || userRole === "admin") && (
-          <button className="sidebar-item" onClick={openCreateEventModal}>
+          <button className="sidebar-item" onClick={openCreateEventModal} type="button">
             Create Event
           </button>
         )}
 
         {userRole === "event_manager" && (
-          <Link to="/my-events" className="sidebar-item" onClick={() => setIsOpen(false)}>
-            My Events
-          </Link>
+          <>
+            <Link to="/my-events" className="sidebar-item" onClick={() => setIsOpen(false)}>
+              My Events
+            </Link>
+            
+          </>
         )}
 
         {userRole === "attendee" && (
@@ -59,25 +64,46 @@ const NavbarPrivate = () => {
           </Link>
         )}
 
+        
+
         {userRole === "admin" && (
           <>
-            <Link to="/admin/users" className="sidebar-item" onClick={() => setIsOpen(false)}>
-              All Users
-            </Link>
-            <Link to="/admin/registrations" className="sidebar-item" onClick={() => setIsOpen(false)}>
-              All Registrations
-            </Link>
-            <Link to="/admin/manage-roles" className="sidebar-item" onClick={() => setIsOpen(false)}>
-              Manage Roles
-            </Link>
-          </>
+          <Link to="/admin/users" className="sidebar-item" onClick={() => setIsOpen(false)}>
+            All Users
+          </Link>
+      
+          <Link to="/admin/registrations" className="sidebar-item" onClick={() => setIsOpen(false)}>
+            All Registrations
+          </Link>
+      
+          <Link to="/admin/manage-roles" className="sidebar-item" onClick={() => setIsOpen(false)}>
+            Manage Roles
+          </Link>
+      
+          <Link to="/admin/reports" className="sidebar-item" onClick={() => setIsOpen(false)}>
+            Reports and  Event Performance
+          </Link>
+          {userRole === "admin" && (
+  <Link to="/admin/feedback" className="sidebar-item" onClick={() => setIsOpen(false)}>
+    Feedback
+  </Link>
+)}
+
+        </>
         )}
 
-        <button className="sidebar-item" onClick={() => navigate("/dashboard")}>
+        <button
+          className="sidebar-item"
+          onClick={() => {
+            setIsOpen(false);
+            navigate("/dashboard");
+          }}
+          type="button"
+        >
           Dashboard
         </button>
 
-        <button className="sidebar-item logout" onClick={handleLogout}>
+        <button className="sidebar-item logout" onClick={handleLogout} type="button">
           Logout
         </button>
       </div>
@@ -103,7 +129,13 @@ const NavbarPrivate = () => {
               ></button>
             </div>
             <div className="modal-body">
-              <EventForm closeModal={closeCreateEventModal} onEventCreated={() => {}} />
+              <EventForm
+                closeModal={closeCreateEventModal}
+                onEventCreated={() => {
+                  closeCreateEventModal();
+                  setIsOpen(false);
+                }}
+              />
             </div>
           </div>
         </div>
