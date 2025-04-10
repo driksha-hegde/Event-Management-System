@@ -47,6 +47,7 @@ useEffect(() => {
               <tr>
                 <th>Total Registrations</th>
                 <th>Payment Status</th>
+                <th>User Roles</th>
               </tr>
             </thead>
             <tbody>
@@ -54,6 +55,9 @@ useEffect(() => {
                 <td>{registrationReport.totalRegistrations}</td>
                 <td>
                   Pending: {registrationReport.paymentStatusCounts.pending}, Completed: {registrationReport.paymentStatusCounts.completed}, Failed: {registrationReport.paymentStatusCounts.failed}
+                </td>
+                <td>
+                  Attendees: {registrationReport.roleCounts.attendee}, Event Managers: {registrationReport.roleCounts.event_manager}, Admins: {registrationReport.roleCounts.admin}
                 </td>
               </tr>
             </tbody>

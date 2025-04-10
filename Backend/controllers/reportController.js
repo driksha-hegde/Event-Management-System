@@ -2,7 +2,7 @@ const Registration = require("../models/Registration");
 const User = require("../models/User");
 const Event = require("../models/Event");
 
-// GET /api/reports/registration
+
 exports.getRegistrationReport = async (req, res) => {
   try {
     const registrations = await Registration.find()
@@ -14,12 +14,12 @@ exports.getRegistrationReport = async (req, res) => {
     const roleCounts = { attendee: 0, event_manager: 0, admin: 0 };
 
     registrations.forEach((reg) => {
-      // Count payment status
+      
       if (paymentStatusCounts[reg.paymentStatus] !== undefined) {
         paymentStatusCounts[reg.paymentStatus]++;
       }
 
-      // Count user role
+      
       if (reg.user && roleCounts[reg.user.role] !== undefined) {
         roleCounts[reg.user.role]++;
       }
@@ -37,7 +37,7 @@ exports.getRegistrationReport = async (req, res) => {
   }
 };
 
-// GET /api/reports/event-performance
+
 exports.getEventPerformance = async (req, res) => {
   try {
     const registrations = await Registration.find()

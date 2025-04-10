@@ -1,7 +1,7 @@
 const Event = require("../models/Event");
 const mongoose = require("mongoose");
 
-// ✅ Create Event (Only event managers)
+// Create Event (event managers and admin)
 exports.createEvent = async (req, res) => {
   try {
     console.log("📩 Incoming Request Body:", req.body);
@@ -19,11 +19,11 @@ exports.createEvent = async (req, res) => {
 
     const { title, date, time, location, description, registrationFee } = req.body;
 
-    // Check if an event exists at the same location, date, and time
+    
     const existingEvent = await Event.findOne({ date, time, location });
 
     if (existingEvent) {
-      // Suggest next available time slots (e.g., 30-minute gaps)
+      
       const nextAvailableTime = await findNextAvailableTime(date, location);
       return res.status(400).json({
         message: `An event is already scheduled at this location for the given time.`,
@@ -31,14 +31,14 @@ exports.createEvent = async (req, res) => {
       });
     }
 
-    // If no conflict at the same location, create the event
+    
     const newEvent = new Event({ 
       title, 
       date, 
       time, 
       location, 
       description, 
-      registrationFee, // Include registrationFee in the new event
+      registrationFee, 
       createdBy: req.user.id 
     });
     await newEvent.save();
@@ -51,21 +51,21 @@ exports.createEvent = async (req, res) => {
 
 // Function to find the next available time slot
 const findNextAvailableTime = async (date, location) => {
-  const events = await Event.find({ date, location }).sort({ time: 1 }); // Get all events sorted by time
+  const events = await Event.find({ date, location }).sort({ time: 1 }); 
 
-  let suggestedTime = "09:00"; // Default start time
+  let suggestedTime = "09:00"; 
 
   for (let event of events) {
-    let eventEndTime = incrementTime(event.time, 30); // Assume each event is 30 minutes long
+    let eventEndTime = incrementTime(event.time, 30); 
     if (isTimeAvailable(eventEndTime, events)) {
       return eventEndTime;
     }
   }
 
-  return suggestedTime; // If no conflicts, return default time
+  return suggestedTime; 
 };
 
-// Helper function to add minutes to a time string (HH:mm)
+
 const incrementTime = (timeStr, minutesToAdd) => {
   let [hours, minutes] = timeStr.split(":").map(Number);
   minutes += minutesToAdd;
@@ -78,12 +78,12 @@ const incrementTime = (timeStr, minutesToAdd) => {
   return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 };
 
-// Helper function to check if a time slot is available
+
 const isTimeAvailable = (time, events) => {
   return !events.some(event => event.time === time);
 };
 
-// ✅ Get All Events
+//  Get All Events
 exports.getAllEvents = async (req, res) => {
   try {
     const events = await Event.find().populate("createdBy", "name email");
@@ -93,7 +93,7 @@ exports.getAllEvents = async (req, res) => {
   }
 };
 
-// ✅ Get Single Event by ID
+//  Get Single Event by ID
 exports.getEventById = async (req, res) => {
   try {
     const event = await Event.findById(req.params.id).populate("createdBy", "name email");
@@ -105,7 +105,7 @@ exports.getEventById = async (req, res) => {
   }
 };
 
-// ✅ Update Event (Only the creator can update)
+// Update Event (Only admin can update)
 exports.updateEvent = async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
@@ -115,7 +115,7 @@ exports.updateEvent = async (req, res) => {
     console.log("User trying to update:", req.user._id);
     console.log("User role:", req.user.role);
 
-    // ✅ Admins can update anything, event managers only their own events
+    
     if (req.user.role !== 'admin' && event.createdBy.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Unauthorized to update this event" });
     }
@@ -129,7 +129,7 @@ exports.updateEvent = async (req, res) => {
 
 
 
-// ✅ Delete Event (Only the creator can delete)
+// Delete Event (Only admin can delete)
 exports.deleteEvent = async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
@@ -139,7 +139,7 @@ exports.deleteEvent = async (req, res) => {
     console.log("User trying to delete:", req.user._id);
     console.log("User role:", req.user.role);
 
-    // ✅ Admins can delete anything, event managers only their own events
+    
     if (req.user.role !== 'admin' && event.createdBy.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Unauthorized to delete this event" });
     }

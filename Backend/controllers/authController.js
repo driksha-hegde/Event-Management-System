@@ -7,26 +7,26 @@ exports.register = async (req, res) => {
     try {
         const { username, email, password, role } = req.body;
 
-        // Validate required fields
+        
         if (!username || !email || !password || !role) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
-        // Check if user already exists
+        
         let user = await User.findOne({ email });
         if (user) return res.status(400).json({ message: "User already exists" });
 
-        // Validate role
+        
         const validRoles = ["admin", "attendee", "event_manager"];
         if (!validRoles.includes(role.toLowerCase())) {
             return res.status(400).json({ message: "Invalid role selected" });
         }
 
-        // Hash the password
+        
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Create new user with role
+        
         user = new User({ username, email, password: hashedPassword, role });
         await user.save();
 
@@ -41,15 +41,15 @@ exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Check if user exists
+        
         let user = await User.findOne({ email });
         if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
-        // Compare passwords
+        
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
-        // Generate JWT token
+        
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
         res.json({
@@ -65,7 +65,7 @@ exports.login = async (req, res) => {
 // Get all users (Admin only)
 exports.getAllUsers = async (req, res) => {
     try {
-        const users = await User.find({}, "-password"); // Exclude password field
+        const users = await User.find({}, "-password"); 
         res.status(200).json(users);
     } catch (error) {
         res.status(500).json({ message: "Error fetching users", error: error.message });
