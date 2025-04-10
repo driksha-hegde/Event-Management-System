@@ -3,7 +3,7 @@ const Stripe = require("stripe");
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const Registration = require("../models/Registration");
 
-// ✅ Function to initiate payment
+// Function to initiate payment
 const initiatePayment = async (req, res) => {
   try {
     const { amount, registrationId } = req.body;
@@ -26,7 +26,7 @@ const initiatePayment = async (req, res) => {
   }
 };
 
-// ✅ Webhook to handle Stripe events
+// Webhook to handle Stripe events
 const handleStripeWebhook = async (req, res) => {
   const sig = req.headers["stripe-signature"];
   const endpointSecret = process.env.STRIPE_ENDPOINT_SECRET;

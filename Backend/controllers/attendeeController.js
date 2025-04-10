@@ -1,7 +1,7 @@
 const Registration = require("../models/Registration");
 const Event = require("../models/Event");
 
-// ✅ Check-in Controller
+// Check-in Controller
 exports.checkInAttendee = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -36,7 +36,7 @@ exports.checkInAttendee = async (req, res) => {
   }
 };
 
-// ✅ Check-out Controller
+// Check-out Controller
 exports.checkOutAttendee = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -75,7 +75,7 @@ exports.checkOutAttendee = async (req, res) => {
   }
 };
 
-// ✅ Get attendees for an event (admin or event manager who created it)
+// Get attendees for an event (admin or event manager who created it)
 exports.getEventAttendees = async (req, res) => {
   try {
     const { eventId } = req.params;
@@ -87,13 +87,13 @@ exports.getEventAttendees = async (req, res) => {
       return res.status(404).json({ message: "Event not found" });
     }
 
-    // 🔐 Debug logs
+    
     console.log("🔐 Checking Access Control:");
     console.log("➡️ Logged-in User ID:   ", user._id.toString());
     console.log("➡️ Event Created By ID: ", event.createdBy.toString());
     console.log("➡️ User Role:           ", user.role);
 
-    // ✅ Only allow admin or the event manager who created it
+    // Only allow admin or the event manager who created it
     if (
       user.role === "event_manager" &&
       String(event.createdBy) !== String(user._id)
@@ -114,7 +114,7 @@ exports.getEventAttendees = async (req, res) => {
     res.status(500).json({ message: "Server error retrieving attendees." });
   }
 };
-// ✅ Get all events the logged-in attendee has registered for
+//Get all events the logged-in attendee has registered for
 exports.getMyRegisteredEvents = async (req, res) => {
   try {
     console.log("🔍 req.user:", req.user);
@@ -129,7 +129,7 @@ exports.getMyRegisteredEvents = async (req, res) => {
     console.log("📦 Raw registrations:", registrations);
 
     const formatted = registrations
-      .filter(reg => reg.event) // Prevents crashes if event is missing
+      .filter(reg => reg.event) 
       .map((reg) => ({
         _id: reg._id,
         event: {

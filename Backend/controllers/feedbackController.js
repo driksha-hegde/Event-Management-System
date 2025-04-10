@@ -5,23 +5,23 @@ exports.submitFeedback = async (req, res) => {
     const { eventId, rating, comment } = req.body;
     const user = req.user;
 
-    // ✅ Ensure user is present (set by middleware)
+    
     if (!user || !user.id || !user.role) {
       return res.status(401).json({ message: "Unauthorized: Missing user info" });
     }
 
-    // ✅ Restrict to attendees only
+    
     if (user.role !== "attendee") {
       return res.status(403).json({ message: "Only attendees can submit feedback." });
     }
 
-    // 🔁 Prevent duplicate feedback
+    
     const existingFeedback = await Feedback.findOne({ event: eventId, user: user.id });
     if (existingFeedback) {
       return res.status(400).json({ message: "You have already submitted feedback for this event." });
     }
 
-    // ✅ Create feedback
+    
     const feedback = await Feedback.create({
       event: eventId,
       user: user.id,
