@@ -3,7 +3,7 @@
 An all-in-one platform for managing events, registrations, users, attendees, and analytics. Built using the MERN stack (MongoDB, Express.js, React.js, Node.js), this system simplifies organizing and tracking events with real-time updates, secure login, and modern UI.
 
 
-# 🚀 Features
+## 🚀 Features
 
 🧑 User Authentication & Role Management (Admin, Event Manager, Attendee)
 
@@ -20,7 +20,7 @@ An all-in-one platform for managing events, registrations, users, attendees, and
 🔐 Secure Login with JWT
 
 
-# 🛠️ Tech Stack
+## 🛠️ Tech Stack
 ### Frontend:
 
 React.js
@@ -45,7 +45,7 @@ JWT for Authentication
 
 
 
-# Setup Instructions
+## Setup Instructions
 
 ### 1. Clone the repository
 
