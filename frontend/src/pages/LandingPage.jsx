@@ -15,10 +15,10 @@ const LandingPage = () => {
         justifyContent: "center",
         alignItems: "center",
         textAlign: "center",
-        position: "fixed", // Ensures full-screen overlay
+        position: "fixed", 
         top: 0,
         left: 0,
-        zIndex: 9999, // Ensures it's above the navbar
+        zIndex: 9999, 
       }}
     >
       {/* Dark overlay for readability */}

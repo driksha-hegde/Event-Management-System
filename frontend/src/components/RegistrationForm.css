@@ -1,11 +1,10 @@
-/* Full-screen background */
 .fullscreen-background {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-image: url("/landing-image.jpg"); /* Update path if needed */
+  background-image: url("/landing-image.jpg"); 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -15,7 +14,7 @@
   align-items: center;
 }
 
-/* Dark overlay for contrast */
+
 .overlay {
   position: absolute;
   top: 0;
@@ -25,7 +24,7 @@
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-/* Registration card with glass effect */
+
 .registration-card {
   width: 400px;
   padding: 2rem;
@@ -39,7 +38,7 @@
   text-align: center;
 }
 
-/* Input fields */
+
 .form-control {
   width: 100%;
   padding: 10px;
@@ -51,12 +50,11 @@
   outline: none;
 }
 
-/* Placeholder text color */
 .form-control::placeholder {
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* Styled register button */
+
 .register-button {
   width: 100%;
   border-radius: 50px;

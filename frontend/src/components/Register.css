@@ -1,11 +1,10 @@
-/* Fullscreen background */
 .fullscreen-background {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-image: url('/landing-image.jpg');  /* ✅ Removed unnecessary quotes */
+    background-image: url('/landing-image.jpg');  
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -15,7 +14,7 @@
     align-items: center;
   }
   
-  /* Overlay for contrast */
+ 
   .overlay {
     position: absolute;
     top: 0;
@@ -25,7 +24,7 @@
     background-color: rgba(0, 0, 0, 0.5);
   }
   
-  /* Registration card */
+
   .register-card {
     width: 400px;
     padding: 2rem;
@@ -39,14 +38,14 @@
     text-align: center;
   }
   
-  /* Form input fields */
+  
   .form-control {
     background: rgba(255, 255, 255, 0.2);
     border: none;
     color: white;
   }
   
-  /* Register button */
+
   .register-button {
     width: 100%;
     border-radius: 50px;

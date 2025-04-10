@@ -1,4 +1,3 @@
-/* Fullscreen Background */
 .fullscreen-background {
     position: fixed;
     width: 100%;
@@ -7,10 +6,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow-y: auto; /* Allow scrolling */
+    overflow-y: auto; 
   }
   
-  /* Overlay Effect */
+
   .overlay {
     position: absolute;
     width: 100%;
@@ -18,7 +17,6 @@
     background: rgba(0, 0, 0, 0.5);
   }
   
-  /* Dashboard Card */
   .dashboard-card {
     position: relative;
     background: rgba(255, 255, 255, 0.1);
@@ -30,16 +28,16 @@
     max-width: 800px;
     text-align: center;
     overflow-y: auto;
-    max-height: 90vh; /* Ensures it doesn’t exceed screen height */
+    max-height: 90vh; 
   }
   
-  /* Event List Container */
+
   .event-list-container {
-    max-height: 60vh; /* Allow space for scrolling */
+    max-height: 60vh; 
     overflow-y: auto;
   }
   
-  /* Ensure scrolling works in modal */
+
   .modal-overlay {
     overflow-y: auto;
   }
@@ -49,7 +47,7 @@
     overflow-y: auto;
   }
   
-  /* Custom Scrollbar for Event List & Modal */
+ 
   .event-list-container::-webkit-scrollbar,
   .modal-content::-webkit-scrollbar {
     width: 8px;

@@ -1,4 +1,3 @@
-/* Disable mobile responsiveness */
 html, body {
   width: 100%;
   height: 100%;
@@ -6,7 +5,7 @@ html, body {
 }
 
 .container {
-  width: 400px; /* Fixed width */
+  width: 400px; 
   height: auto;
   margin: auto;
   padding: 2rem;
@@ -20,42 +19,41 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Centers it vertically */
+  height: 100vh; 
   background-color: #fcfcfc;
 }
 
 .register-container {
-  width: 450px; /* Adjusted to match text fields */
-  padding: 22px; /* Reduced padding */
+  width: 450px; 
+  padding: 22px; 
   background: white;
-  border-radius: 12px; /* Softer corners */
-  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15); /* Subtle shadow */
+  border-radius: 12px; 
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15); 
   text-align: center;
   border: 1.5px solid #ddd;
 }
 
 .small-input {
-  padding: 7.5px; /* Adjusted padding */
-  font-size: 18px; /* Reduced font size */
+  padding: 7.5px; 
+  font-size: 18px; 
   text-align: center;
 }
 
 .small-text {
-  font-size: 16px; /* Reduced font size */
+  font-size: 16px; 
 }
 
 button.btn-sm {
-  padding: 9px 18px; /* Adjusted button size */
-  font-size: 19.5px; /* Reduced font size */
+  padding: 9px 18px; 
+  font-size: 19.5px; 
 }
 
 
 
 
-/* Disable media queries */
 @media (max-width: 770px) {
   .container {
-    width: 400px !important; /* Force desktop width */
+    width: 400px !important; 
   }
 }
 

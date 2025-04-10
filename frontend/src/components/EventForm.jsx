@@ -59,7 +59,6 @@ const EventForm = ({ closeModal }) => {
         registrationFee: "",
       });
 
-      // ✅ Notify the dashboard to add the event
       window.dispatchEvent(new CustomEvent("eventCreated", { detail: response.data }));
 
       closeModal();

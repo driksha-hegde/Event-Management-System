@@ -9,12 +9,12 @@ const NavbarPrivate = () => {
   const createEventModalRef = useRef(null);
   const navigate = useNavigate();
 
-  // Get user role from localStorage safely
+
   const user = JSON.parse(localStorage.getItem("user"));
   const userRole = user?.role || "";
 
   const openCreateEventModal = () => {
-    setIsOpen(false); // Close sidebar
+    setIsOpen(false); 
     const modalInstance = Modal.getOrCreateInstance(createEventModalRef.current);
     modalInstance.show();
   };

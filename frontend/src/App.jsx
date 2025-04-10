@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-// Components & Pages
+
 import Login from "./components/Login";
 import Register from "./components/Register";
 import NavbarPublic from "./components/NavbarPublic";
@@ -19,7 +19,7 @@ import MyEvents from "./pages/MyEvents";
 import MyAttendees from "./pages/MyAttendees";
 import EventPerformance from "./pages/EventPerformance";
 import Reports from './pages/Reports';
-import FeedbackPage from './pages/FeedbackPage'; // For admin view
+import FeedbackPage from './pages/FeedbackPage'; 
 
 // Stripe
 import { Elements } from "@stripe/react-stripe-js";
@@ -184,7 +184,7 @@ const App = () => {
               element={userRole === "admin" ? <FeedbackPage /> : <Navigate to="/dashboard" />}
             />
 
-            {/* Shared by Admin & Event Manager */}
+            {/* Admin access only*/}
             <Route
               path="/performance"
               element={

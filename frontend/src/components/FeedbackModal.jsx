@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "./FeedbackModal.css"; // We'll style it below
+import "./FeedbackModal.css"; 
 
 const FeedbackModal = ({ onClose, selectedEvent }) => {
     const [feedback, setFeedback] = useState("");
@@ -8,7 +8,7 @@ const FeedbackModal = ({ onClose, selectedEvent }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
   
-    if (!selectedEvent) return null; // Only render if event is selected
+    if (!selectedEvent) return null; 
   
 
   const handleSubmit = async (e) => {
@@ -43,7 +43,7 @@ const FeedbackModal = ({ onClose, selectedEvent }) => {
         }
       );
       alert("Feedback submitted successfully!");
-      onClose(); // close modal
+      onClose(); 
     } catch (err) {
       console.error("Error submitting feedback", err);
       setError("Failed to submit feedback. Please try again.");

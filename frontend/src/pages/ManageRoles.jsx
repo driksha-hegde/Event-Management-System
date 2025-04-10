@@ -23,7 +23,6 @@ const ManageRoles = () => {
         },
       });
 
-      // Support both { users: [...] } and direct array response
       const userList = Array.isArray(res.data) ? res.data : res.data.users || [];
       setUsers(userList);
     } catch (error) {
@@ -37,7 +36,7 @@ const ManageRoles = () => {
   const updateRole = async (userId, newRole) => {
     try {
       const res = await axios.put(
-        "http://localhost:5000/api/users/update-role", // ✅ Correct API route
+        "http://localhost:5000/api/users/update-role", 
         { userId, newRole },
         {
           headers: {
@@ -46,7 +45,7 @@ const ManageRoles = () => {
         }
       );
       setMessage(res.data.message || "✅ Role updated successfully");
-      fetchUsers(); // Refresh user list
+      fetchUsers(); 
     } catch (error) {
       console.error("Failed to update role:", error.response?.data || error.message);
       setMessage("❌ Failed to update role: " + (error.response?.data?.message || error.message));

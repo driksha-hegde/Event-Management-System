@@ -1,7 +1,6 @@
-// src/pages/AllUsers.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./AllUsers.css"; // Keep this line to load the styles
+import "./AllUsers.css"; 
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);

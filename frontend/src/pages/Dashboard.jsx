@@ -26,7 +26,6 @@ const Dashboard = () => {
 
     fetchEvents();
 
-    // ✅ Listen for new events
     const handleNewEvent = (e) => {
       setEvents((prevEvents) => [...prevEvents, e.detail]);
     };

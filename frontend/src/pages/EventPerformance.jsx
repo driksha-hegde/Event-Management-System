@@ -1,4 +1,3 @@
-// src/pages/EventPerformance.js
 import React, { useState, useEffect } from 'react';
 import { getEventPerformance } from '../services/reportService';
 

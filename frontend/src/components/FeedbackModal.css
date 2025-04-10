@@ -95,7 +95,7 @@
   
   .feedback-modal .close-button:hover {
     color: #ffcccb;
-    background: none; /* prevent orange hover box */
+    background: none; 
   }
   
   

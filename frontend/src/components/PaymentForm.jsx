@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { useLocation, useNavigate } from "react-router-dom";
-import "./PaymentForm.css"; // ✅ Ensure this is imported
+import "./PaymentForm.css"; 
 
 const PaymentForm = () => {
   const stripe = useStripe();
@@ -91,4 +91,3 @@ const PaymentForm = () => {
 };
 
 export default PaymentForm;
-//needs some changes

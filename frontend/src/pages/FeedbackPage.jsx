@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./FeedbackPage.css"; // Create and style this file
+import "./FeedbackPage.css"; 
 
 const FeedbackPage = () => {
   const [feedbacks, setFeedbacks] = useState([]);

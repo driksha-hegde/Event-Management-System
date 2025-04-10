@@ -2,7 +2,7 @@ import api from "../utils/axiosInstance";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import "./Login.css"; // Import the CSS file
+import "./Login.css"; 
 
 const Login = ({ setIsLoggedIn }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -20,7 +20,6 @@ const Login = ({ setIsLoggedIn }) => {
     setError("");
 
     try {
-      // 🔁 Clear previous session
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       localStorage.removeItem("role");
@@ -29,11 +28,11 @@ const Login = ({ setIsLoggedIn }) => {
       const { token, user } = response.data;
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("role", user.role); // Optional, since role is already inside `user`
+      localStorage.setItem("role", user.role); 
       
-      window.dispatchEvent(new Event("storage")); // ✅ Triggers App to re-check auth
+      window.dispatchEvent(new Event("storage")); 
       
-      // No need to manually call setIsLoggedIn(true) here, because App.jsx handles it
+    
       
       navigate("/dashboard");
     } catch (err) {

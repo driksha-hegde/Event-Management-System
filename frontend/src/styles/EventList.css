@@ -1,10 +1,8 @@
-/* Event List Container */
 .event-container {
   width: 100%;
   padding: 20px;
 }
 
-/* Event Cards */
 .event-card {
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(8px);
@@ -15,7 +13,6 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Button group styling */
 .button-group {
   display: flex;
   justify-content: center;
@@ -24,7 +21,7 @@
   flex-wrap: wrap;
 }
 
-/* Gradient Button Styles */
+
 .event-card .btn {
   flex: 1;
   min-width: 100px;
@@ -46,7 +43,6 @@
   color: white;
 }
 
-/* Modal Overlay */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -60,7 +56,6 @@
   z-index: 1000;
 }
 
-/* Modal Content */
 .modal-content {
   background: #ffffff !important;
   padding: 25px;
@@ -75,7 +70,6 @@
   color: black;
 }
 
-/* Close Button */
 .close-btn {
   position: absolute;
   top: 10px;
@@ -91,7 +85,7 @@
   color: red;
 }
 
-/* Custom Scrollbar */
+
 .modal-content::-webkit-scrollbar {
   width: 8px;
 }

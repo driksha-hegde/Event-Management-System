@@ -34,12 +34,12 @@
     z-index: 1;
   }
   
-  /* Prettier gradient heading */
+
   .table-title {
     text-align: center;
     font-size: 2rem;
     margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, #f9a825, #f48fb1); /* gold to soft pink */
+    background: linear-gradient(135deg, #f9a825, #f48fb1); 
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -64,7 +64,7 @@
   }
   
   .custom-table th {
-    background: linear-gradient(135deg, #fbc02d, #ff7043); /* golden to coral */
+    background: linear-gradient(135deg, #fbc02d, #ff7043); 
     color: #000;
     position: sticky;
     top: 0;
