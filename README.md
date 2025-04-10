@@ -1,9 +1,9 @@
-📅 Event Management System
+# 📅 Event Management System
 
 An all-in-one platform for managing events, registrations, users, attendees, and analytics. Built using the MERN stack (MongoDB, Express.js, React.js, Node.js), this system simplifies organizing and tracking events with real-time updates, secure login, and modern UI.
 
 
-🚀 Features
+# 🚀 Features
 
 🧑 User Authentication & Role Management (Admin, Event Manager, Attendee)
 
@@ -20,8 +20,8 @@ An all-in-one platform for managing events, registrations, users, attendees, and
 🔐 Secure Login with JWT
 
 
-🛠️ Tech Stack
-Frontend:
+# 🛠️ Tech Stack
+### Frontend:
 
 React.js
 
@@ -29,7 +29,7 @@ HTML5, CSS3, Bootstrap
 
 Axios
 
-Backend:
+### Backend:
 
 Node.js
 
@@ -45,15 +45,15 @@ JWT for Authentication
 
 
 
-Setup Instructions
+# Setup Instructions
 
-1. Clone the repository
+### 1. Clone the repository
 
 git clone https://github.com/your-username/event-management-system.git
 
 cd event-management-system
 
-2. Install dependencies
+### 2. Install dependencies
 
 Frontend:
 
@@ -65,7 +65,7 @@ Backend:
 cd ../server
 npm install
 
-3. Configure Environment Variables
+### 3. Configure Environment Variables
 
 Create a .env file in /server with:
 
@@ -73,7 +73,7 @@ MONGO_URI=your_mongodb_uri
 JWT_SECRET=your_jwt_secret
 
 
-4. Run the Application
+### 4. Run the Application
 
 Start Backend:
 
